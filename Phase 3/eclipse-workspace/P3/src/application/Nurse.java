@@ -1,5 +1,5 @@
 package application;
 
-public class Nurse {
+public class Nurse extends User {
 
 }
