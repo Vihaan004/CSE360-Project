@@ -12,7 +12,7 @@ public class Main extends Application {
 	
 	public void start(Stage primaryStage) {
 		UserLogin login = new UserLogin(primaryStage, width, height);
-		login.showStartupPage();
+		login.startup();
 	}
 	
 	public static void main(String[] args) {

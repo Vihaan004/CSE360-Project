@@ -16,6 +16,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -35,36 +37,33 @@ public class UserLogin {
 		height = h;
 	}
 	
-//	private VBox createLogoBox(String prompt) {
-//		
-//	}
-
-	public void showStartupPage() {
+	// startup page
+	public void startup() {
+		createStartupScene();
+		stage.setScene(startupScene);
+	    stage.setTitle("AutoPed");
+	    stage.show();
+	}
+	
+	// login page
+	public void login() {
+		createLoginScene();
+		stage.setScene(loginScene);
+	    stage.setTitle("AutoPed");
+	    stage.show();
+	}
+	
+	// create and set startup scene to current stage
+	private void createStartupScene() {
+		
 	    GridPane grid = new GridPane();
 	    grid.setAlignment(Pos.CENTER);
 	    grid.setHgap(10);
 	    grid.setVgap(10);
 //	    grid.setPadding(new Insets(15, 15, 15, 15));
 	    
-	    VBox logoBox = new VBox(10);
-	    logoBox.setAlignment(Pos.CENTER);
-	    // Application logo 
-	    Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
-	    ImageView logoView = new ImageView(logo);
-	    logoView.setFitWidth(200);
-	    logoView.setPreserveRatio(true);
-//	    grid.add(logoView, 0, 0);
-
-	    Text header = new Text("Welcome to AutoPed");
-	    header.setFont(Font.font("verdana", 20)); // Set font name and size
-//	    grid.add(header, 0, 1);
-	    
-	    Text prompt = new Text("Please select your user type to begin.");
-	    prompt.setFont(Font.font("verdana", 14)); // Set font name and size
-//	    grid.add(sub, 0, 2); 
-	    
-	    logoBox.getChildren().addAll(logoView, prompt); // add header?
-	    
+	    VBox logoBox = createLogoBox("Please select your user type to begin");
+	    grid.add(logoBox, 0, 0);
 	    
 	    // Separator line
 	    Separator separator = new Separator();
@@ -75,56 +74,133 @@ public class UserLogin {
 	    GridPane.setMargin(separator, new Insets(0, 50, 0, 50)); // margin around the separator
 	    
 	    
-	    
 	    VBox buttonBox = new VBox(30);
 
 	    // Buttons by user type
 	    Button patientButton = new Button("Patient");
 	    patientButton.setMinSize(100, 50);
-//	    GridPane.setConstraints(patientButton, 2, 0);
 	    patientButton.setOnAction(e -> {
 	        userType = "patient";
-	        showUserLoginPage();
+	        login();
 	    });
 
 	    Button nurseButton = new Button("Nurse");
 	    nurseButton.setMinSize(100, 50);
-//	    GridPane.setConstraints(nurseButton, 2, 1); 
 	    nurseButton.setOnAction(e -> {
 	        userType = "nurse";
-	        showUserLoginPage();
+	        login();
 	    });
 
 	    Button doctorButton = new Button("Doctor");
 	    doctorButton.setMinSize(100, 50);
-//	    GridPane.setConstraints(doctorButton, 2, 2);
 	    doctorButton.setOnAction(e -> {
 	        userType = "doctor";
-	        showUserLoginPage();
+	        login();
 	    });
 
-	    // Adding buttons to the grid
 	    buttonBox.getChildren().addAll(patientButton, nurseButton, doctorButton);
-	    
-	    grid.add(logoBox, 0, 0);
+	    // Adding buttons to the grid
 	    grid.add(buttonBox, 3, 0);
 
 	    // Scene setup
 	    startupScene = new Scene(grid, width, height);
-	    stage.setScene(startupScene);
-	    stage.setTitle("AutoPed");
-	    stage.show();
+		startupScene.getRoot().requestFocus();
+	    
 	}
 
+	// create and set login scene to current stage
+	private void createLoginScene() {
 	
-	
-	private void showUserLoginPage() {
-		
 	    GridPane grid = new GridPane();
+	    grid.setAlignment(Pos.CENTER);
+	    grid.setHgap(10);
+	    grid.setVgap(10);
+	    
+	    VBox logoBox = createLogoBox("Enter your name and date of birth");
+	    grid.add(logoBox, 0, 0);
+	    
+	    // Separator line
+	    Separator separator = new Separator();
+	    separator.setOrientation(Orientation.VERTICAL);
+	    grid.add(separator, 1, 0, 1, 3);
+
+	    separator.setPrefHeight(200); // line height
+	    GridPane.setMargin(separator, new Insets(0, 50, 0, 50)); // margin around the separator
+	    
+	    VBox loginBox = new VBox(10);
+//	    loginBox.setAlignment(Pos.CENTER);
+	    
+	    HBox firstNameBox = new HBox(21);
+	    firstNameBox.setAlignment(Pos.CENTER_LEFT); 
+	    Label firstNameLabel = new Label("First Name:");
+	    TextField firstName = new TextField();
+//	    firstName.setPromptText("");
+	    firstNameBox.getChildren().addAll(firstNameLabel, firstName); 
+	    
+	    
+	    HBox lastNameBox = new HBox(21);
+	    lastNameBox.setAlignment(Pos.CENTER_LEFT);
+	    Label lastNameLabel = new Label("Last Name:");
+	    TextField lastName = new TextField();
+//	    lastName.setPromptText("last name");
+	    lastNameBox.getChildren().addAll(lastNameLabel, lastName); 
+	    
+	    
+	    HBox dateBox = new HBox(10);
+	    dateBox.setAlignment(Pos.CENTER_LEFT);
+	    Label datePickerLabel = new Label("Date of Birth:");
+	    DatePicker datePicker = new DatePicker();
+	    datePicker.setPromptText("MM/DD/YYYY");
+	    dateBox.getChildren().addAll(datePickerLabel, datePicker);
+	    
+	    
+	    HBox buttonBox = new HBox(10);
+	    buttonBox.setAlignment(Pos.CENTER_LEFT);
+	    
+	    Button backButton = new Button("Back");
+	    backButton.setOnAction(e -> {
+	    	startup();
+	    });
+	    
+	    Button loginButton = new Button("Login");
+	    loginButton.setAlignment(Pos.CENTER_RIGHT);
+	    // login functionality, authentication
+	    
+	   
+	    Region spacer = new Region();
+	    HBox.setHgrow(spacer, Priority.ALWAYS); 
+	    buttonBox.getChildren().addAll(backButton, spacer, loginButton);
+	    
+	    VBox.setMargin(buttonBox, new Insets(20, 0, 0, 0));
+	    
+	    // adding login form to the grid
+	    loginBox.getChildren().addAll(firstNameBox, lastNameBox, dateBox, buttonBox);
+	    grid.add(loginBox, 2, 0);
 		
+	    // scene setup
         loginScene = new Scene(grid, width, height);
-        stage.setScene(loginScene);
-        stage.show();
+	    loginScene.getRoot().requestFocus();
+	}
+	
+	// create common logo section with specified prompt
+	private VBox createLogoBox(String promptText) {
+		VBox logoBox = new VBox(10);
+	    logoBox.setAlignment(Pos.CENTER);
+	    // Application logo 
+	    Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
+	    ImageView logoView = new ImageView(logo);
+	    logoView.setFitWidth(200);
+	    logoView.setPreserveRatio(true);
+
+//	    Text header = new Text("Welcome to AutoPed");
+//	    header.setFont(Font.font("verdana", 20)); // Set font name and size
+	    
+	    // prompt
+	    Text prompt = new Text(promptText);
+	    prompt.setFont(Font.font("verdana", 14)); // Set font name and size
+	    
+	    logoBox.getChildren().addAll(logoView, prompt); // add header?
+	    return logoBox;
 	}
 	
 }
