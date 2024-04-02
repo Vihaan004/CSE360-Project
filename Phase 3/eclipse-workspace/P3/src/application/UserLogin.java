@@ -49,7 +49,6 @@ public class UserLogin {
 	public void login() {
 		createLoginScene();
 		stage.setScene(loginScene);
-	    stage.setTitle("AutoPed");
 	    stage.show();
 	}
 	
