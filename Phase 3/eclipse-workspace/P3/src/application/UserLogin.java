@@ -30,6 +30,9 @@ public class UserLogin {
 	private Scene startupScene;
 	private Scene loginScene;
 	private String userType;
+	private TextField firstName;
+	private TextField lastName;
+	private DatePicker dob;
 	
 	UserLogin(Stage stage, int w, int h) {
 		this.stage = stage;
@@ -132,7 +135,7 @@ public class UserLogin {
 	    HBox firstNameBox = new HBox(21);
 	    firstNameBox.setAlignment(Pos.CENTER_LEFT); 
 	    Label firstNameLabel = new Label("First Name:");
-	    TextField firstName = new TextField();
+	    firstName = new TextField(); 							// class var
 //	    firstName.setPromptText("");
 	    firstNameBox.getChildren().addAll(firstNameLabel, firstName); 
 	    
@@ -140,17 +143,17 @@ public class UserLogin {
 	    HBox lastNameBox = new HBox(21);
 	    lastNameBox.setAlignment(Pos.CENTER_LEFT);
 	    Label lastNameLabel = new Label("Last Name:");
-	    TextField lastName = new TextField();
+	    lastName = new TextField(); 							// class var
 //	    lastName.setPromptText("last name");
 	    lastNameBox.getChildren().addAll(lastNameLabel, lastName); 
 	    
 	    
 	    HBox dateBox = new HBox(10);
 	    dateBox.setAlignment(Pos.CENTER_LEFT);
-	    Label datePickerLabel = new Label("Date of Birth:");
-	    DatePicker datePicker = new DatePicker();
-	    datePicker.setPromptText("MM/DD/YYYY");
-	    dateBox.getChildren().addAll(datePickerLabel, datePicker);
+	    Label dobLabel = new Label("Date of Birth:");
+	    dob = new DatePicker();				// class var
+	    dob.setPromptText("MM/DD/YYYY");
+	    dateBox.getChildren().addAll(dobLabel, dob);
 	    
 	    
 	    HBox buttonBox = new HBox(10);
@@ -161,14 +164,16 @@ public class UserLogin {
 	    	startup();
 	    });
 	    
+	    Button newUser = new Button();
+	    
 	    Button loginButton = new Button("Login");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    // login functionality, authentication
 	    
 	   
-	    Region spacer = new Region();
-	    HBox.setHgrow(spacer, Priority.ALWAYS); 
-	    buttonBox.getChildren().addAll(backButton, spacer, loginButton);
+//	    Region spacer = new Region();
+//	    HBox.setHgrow(spacer, Priority.ALWAYS); 
+//	    buttonBox.getChildren().addAll(backButton, spacer, loginButton);
 	    
 	    VBox.setMargin(buttonBox, new Insets(20, 0, 0, 0));
 	    
