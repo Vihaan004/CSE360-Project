@@ -1,3 +1,6 @@
+// CSE 360 Group Project
+// Team 40 - Tuesday 1:30 pm
+
 package application;
 
 import java.io.File;
@@ -19,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -49,7 +53,7 @@ public class UserLogin {
 	}
 	
 	// login page
-	public void login() {
+	public void loginPage() {
 		createLoginScene();
 		stage.setScene(loginScene);
 	    stage.show();
@@ -83,21 +87,21 @@ public class UserLogin {
 	    patientButton.setMinSize(100, 50);
 	    patientButton.setOnAction(e -> {
 	        userType = "patient";
-	        login();
+	        loginPage();
 	    });
 
 	    Button nurseButton = new Button("Nurse");
 	    nurseButton.setMinSize(100, 50);
 	    nurseButton.setOnAction(e -> {
 	        userType = "nurse";
-	        login();
+	        loginPage();
 	    });
 
 	    Button doctorButton = new Button("Doctor");
 	    doctorButton.setMinSize(100, 50);
 	    doctorButton.setOnAction(e -> {
 	        userType = "doctor";
-	        login();
+	        loginPage();
 	    });
 
 	    buttonBox.getChildren().addAll(patientButton, nurseButton, doctorButton);
@@ -151,10 +155,13 @@ public class UserLogin {
 	    HBox dateBox = new HBox(10);
 	    dateBox.setAlignment(Pos.CENTER_LEFT);
 	    Label dobLabel = new Label("Date of Birth:");
-	    dob = new DatePicker();				// class var
+	    dob = new DatePicker();									// class var
 	    dob.setPromptText("MM/DD/YYYY");
 	    dateBox.getChildren().addAll(dobLabel, dob);
 	    
+	    Text alert = new Text(userType);
+	    alert.setFont(Font.font("verdana", 12));
+	    alert.setFill(Color.RED);
 	    
 	    HBox buttonBox = new HBox(10);
 	    buttonBox.setAlignment(Pos.CENTER_LEFT);
@@ -164,21 +171,30 @@ public class UserLogin {
 	    	startup();
 	    });
 	    
-	    Button newUser = new Button();
+	    Button signupButton = new Button("Sign Up");
+	    signupButton.setOnAction(e -> {
+	    	login(alert, userType, false);
+	    });
 	    
-	    Button loginButton = new Button("Login");
+	    Button loginButton = new Button("Sign In");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    // login functionality, authentication
+	    loginButton.setOnAction(e -> {
+	    	login(alert, userType, true);
+	    });
 	    
 	   
 //	    Region spacer = new Region();
 //	    HBox.setHgrow(spacer, Priority.ALWAYS); 
-//	    buttonBox.getChildren().addAll(backButton, spacer, loginButton);
+	    
+	    buttonBox.getChildren().addAll(backButton, signupButton, loginButton);
 	    
 	    VBox.setMargin(buttonBox, new Insets(20, 0, 0, 0));
 	    
+	    
+	    
 	    // adding login form to the grid
-	    loginBox.getChildren().addAll(firstNameBox, lastNameBox, dateBox, buttonBox);
+	    loginBox.getChildren().addAll(firstNameBox, lastNameBox, dateBox, buttonBox, alert);
 	    grid.add(loginBox, 2, 0);
 		
 	    // scene setup
@@ -205,6 +221,33 @@ public class UserLogin {
 	    
 	    logoBox.getChildren().addAll(logoView, prompt); // add header?
 	    return logoBox;
+	}
+	
+	private void login(Text alert, String userType, boolean accExists) {
+		
+		// check for exisiting account using User class
+		
+		
+		switch (userType) {
+		case "patient":
+			Patient patient = new Patient(firstName.getText(), lastName.getText(), dob.getValue());
+			if (!accExists) { patient.saveAccount(); }
+			patient.openPortal(stage);
+			break;
+		case "nurse":
+			Nurse nurse = new Nurse(firstName.getText(), lastName.getText(), dob.getValue());
+			if (!accExists) { nurse.saveAccount(); }
+			nurse.openPortal(stage);
+			break;
+		case "doctor":
+			Doctor doctor = new Doctor(firstName.getText(), lastName.getText(), dob.getValue());
+			if (!accExists) { doctor.saveAccount(); }
+			doctor.openPortal(stage);
+			break;
+		default:
+			System.out.println("SysErr");
+			alert.setText("SYSTEM ERROR");
+		}
 	}
 	
 }
