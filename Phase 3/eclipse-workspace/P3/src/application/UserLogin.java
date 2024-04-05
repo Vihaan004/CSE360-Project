@@ -86,21 +86,21 @@ public class UserLogin extends Portal{
 	    patientButton.setMinSize(100, 50);
 	    patientButton.setOnAction(e -> {
 	        userType = "patient";
-	        loginPage();
+	        navigate();
 	    });
 
 	    Button nurseButton = new Button("Nurse");
 	    nurseButton.setMinSize(100, 50);
 	    nurseButton.setOnAction(e -> {
 	        userType = "nurse";
-	        loginPage();
+	        navigate();
 	    });
 
 	    Button doctorButton = new Button("Doctor");
 	    doctorButton.setMinSize(100, 50);
 	    doctorButton.setOnAction(e -> {
 	        userType = "doctor";
-	        loginPage();
+	        navigate();
 	    });
 
 	    buttonBox.getChildren().addAll(patientButton, nurseButton, doctorButton);
@@ -173,14 +173,14 @@ public class UserLogin extends Portal{
 	    
 	    Button signupButton = new Button("Sign Up");
 	    signupButton.setOnAction(e -> {
-	    	login(alert, userType, true);
+	    	login(alert, true); // login(alert, newAccount)
 	    });
 	    
 	    Button loginButton = new Button("Sign In");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    // login functionality, authentication
 	    loginButton.setOnAction(e -> {
-	    	login(alert, userType, false);
+	    	login(alert, false); // login(alert, newAccount)
 	    });
 	    
 	   
@@ -190,7 +190,6 @@ public class UserLogin extends Portal{
 	    buttonBox.getChildren().addAll(backButton, signupButton, loginButton);
 	    
 	    VBox.setMargin(buttonBox, new Insets(20, 0, 0, 0));
-	    
 	    
 	    
 	    // adding login form to the grid
@@ -225,34 +224,31 @@ public class UserLogin extends Portal{
 	    return logoBox;
 	}
 	
-	private void login(Text alert, String userType, boolean newAccount) {
-		
-		
-		// check for exisiting account using User class
-		
-		
-		
+	private void navigate() {
 		
 		switch (userType) {
-		case "patient":
-			Patient patient = new Patient(firstName.getText(), lastName.getText(), dob.getValue());
-			if (newAccount) { patient.saveAccount(); }
-			patient.openPortal(stage);
+		case "patient" :
+			loginPage();
 			break;
-		case "nurse":
-			Nurse nurse = new Nurse(firstName.getText(), lastName.getText(), dob.getValue());
-			if (newAccount) { nurse.saveAccount(); }
-			nurse.openPortal(stage);
-			break;
-		case "doctor":
-			Doctor doctor = new Doctor(firstName.getText(), lastName.getText(), dob.getValue());
-			if (newAccount) { doctor.saveAccount(); }
-			doctor.openPortal(stage);
-			break;
-		default:
-			System.out.println("SysErr");
-			alert.setText("SYSTEM ERROR");
+		case "nurse" :
+	        NursePortal nursePortal = new NursePortal(stage);
+	        nursePortal.accessPortal();
+		case "doctor" :
+	        DoctorPortal doctorPortal = new DoctorPortal(stage);
+	        doctorPortal.accessPortal();
 		}
+	}
+	
+	private void login(Text alert, boolean newAccount) {
+		
+		// check for exisiting account
+		
+		
+		
+		Patient patient = new Patient(firstName.getText(), lastName.getText(), dob.getValue());
+		if (newAccount) { patient.saveAccount(); }
+		patient.openPortal(stage);
+		
 	}
 	
 }
