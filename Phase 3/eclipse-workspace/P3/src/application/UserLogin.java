@@ -28,9 +28,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-public class UserLogin {
-	private int width, height;
-	private Stage stage;
+public class UserLogin extends Portal{
+
+	//	private Stage stage;
 	private Scene startupScene;
 	private Scene loginScene;
 	private String userType;
@@ -39,14 +39,13 @@ public class UserLogin {
 	private DatePicker dob;
 	
 	UserLogin(Stage stage, int w, int h) {
-		this.stage = stage;
-		width = w;
-		height = h;
+		// setting universal vars
+		super(stage, w, h);
 	}
 	
 	// startup page
 	public void startup() {
-		createStartupScene();
+		startupScene = createStartupScene();
 		stage.setScene(startupScene);
 	    stage.setTitle("AutoPed");
 	    stage.show();
@@ -54,13 +53,13 @@ public class UserLogin {
 	
 	// login page
 	public void loginPage() {
-		createLoginScene();
+		loginScene = createLoginScene();
 		stage.setScene(loginScene);
 	    stage.show();
 	}
 	
 	// create and set startup scene to current stage
-	private void createStartupScene() {
+	private Scene createStartupScene() {
 		
 	    GridPane grid = new GridPane();
 	    grid.setAlignment(Pos.CENTER);
@@ -109,13 +108,14 @@ public class UserLogin {
 	    grid.add(buttonBox, 3, 0);
 
 	    // Scene setup
-	    startupScene = new Scene(grid, width, height);
+	    Scene startupScene = new Scene(grid, width, height);
 		startupScene.getRoot().requestFocus();
+		return startupScene;
 	    
 	}
 
 	// create and set login scene to current stage
-	private void createLoginScene() {
+	private Scene createLoginScene() {
 	
 	    GridPane grid = new GridPane();
 	    grid.setAlignment(Pos.CENTER);
@@ -173,14 +173,14 @@ public class UserLogin {
 	    
 	    Button signupButton = new Button("Sign Up");
 	    signupButton.setOnAction(e -> {
-	    	login(alert, userType, false);
+	    	login(alert, userType, true);
 	    });
 	    
 	    Button loginButton = new Button("Sign In");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    // login functionality, authentication
 	    loginButton.setOnAction(e -> {
-	    	login(alert, userType, true);
+	    	login(alert, userType, false);
 	    });
 	    
 	   
@@ -198,8 +198,10 @@ public class UserLogin {
 	    grid.add(loginBox, 2, 0);
 		
 	    // scene setup
-        loginScene = new Scene(grid, width, height);
+        Scene loginScene = new Scene(grid, width, height);
 	    loginScene.getRoot().requestFocus();
+	    
+	    return loginScene;
 	}
 	
 	// create common logo section with specified prompt
@@ -223,25 +225,28 @@ public class UserLogin {
 	    return logoBox;
 	}
 	
-	private void login(Text alert, String userType, boolean accExists) {
+	private void login(Text alert, String userType, boolean newAccount) {
+		
 		
 		// check for exisiting account using User class
+		
+		
 		
 		
 		switch (userType) {
 		case "patient":
 			Patient patient = new Patient(firstName.getText(), lastName.getText(), dob.getValue());
-			if (!accExists) { patient.saveAccount(); }
+			if (newAccount) { patient.saveAccount(); }
 			patient.openPortal(stage);
 			break;
 		case "nurse":
 			Nurse nurse = new Nurse(firstName.getText(), lastName.getText(), dob.getValue());
-			if (!accExists) { nurse.saveAccount(); }
+			if (newAccount) { nurse.saveAccount(); }
 			nurse.openPortal(stage);
 			break;
 		case "doctor":
 			Doctor doctor = new Doctor(firstName.getText(), lastName.getText(), dob.getValue());
-			if (!accExists) { doctor.saveAccount(); }
+			if (newAccount) { doctor.saveAccount(); }
 			doctor.openPortal(stage);
 			break;
 		default:

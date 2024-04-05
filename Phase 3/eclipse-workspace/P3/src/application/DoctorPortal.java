@@ -3,9 +3,13 @@ package application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class DoctorPortal {
-	private int width, height;
-	private Stage stage;
+public class DoctorPortal extends Portal{
+
+	DoctorPortal(Stage stage) {
+		super(stage);
+	}
+
+	//	private Stage stage;
 	private Scene doctorScene;
 
 }
