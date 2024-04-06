@@ -5,17 +5,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class PatientPortal extends Portal {
+public class PatientView {
 	
-	PatientPortal(Stage stage) {
-		super(stage);
-	}
-
-	//	private Stage stage;
+	private Stage stage;
+	private int width, height;
 	private Scene patientScene;
 	
-	// navigate page - override user function
-	public void openPortal() {
+	PatientView(Stage stage, int width, int height) {
+		this.stage = stage;
+		this.width = width;
+		this.height = height;
+	}
+	
+	public void view() {
 		patientScene = createPortalScene();
 		stage.setScene(patientScene);
 		stage.show();

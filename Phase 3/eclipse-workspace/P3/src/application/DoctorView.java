@@ -5,23 +5,26 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class DoctorPortal extends Portal{
+public class DoctorView {
 
-	//	private Stage stage;
+	private Stage stage;
+	private int width, height;
 	private Scene doctorScene;
 
-	DoctorPortal(Stage stage) {
-		super(stage);
+	DoctorView(Stage stage, int width, int height) {
+		this.stage = stage;
+		this.width = width;
+		this.height = height;
 	}
 
-	public void accessPortal() {
+	public void view() {
 		doctorScene = createPortalScene();
 		stage.setScene(doctorScene);
 		stage.show();
 	}
 	
 	private Scene createPortalScene() {
-		Text h = new Text("hello nurse");
+		Text h = new Text("doctor");
 		VBox hello = new VBox(h);
 		Scene patientPortal = new Scene(hello, width, height);
 		return patientPortal;

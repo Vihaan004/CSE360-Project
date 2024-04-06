@@ -11,8 +11,8 @@ public class Main extends Application {
 	int height = 800;
 	
 	public void start(Stage primaryStage) {
-		UserLogin app = new UserLogin(primaryStage, width, height);
-		app.startup();
+		Controller control = new Controller(primaryStage, width, height);
+		control.appStart();
 	}
 	
 	public static void main(String[] args) {
