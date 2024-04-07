@@ -24,6 +24,7 @@ public class PatientView {
 	
 	private Stage stage;
     private Controller control;
+    private Messager messager;
 	private int width, height;
 	private Scene patientScene;
 	private Patient patient;
@@ -50,20 +51,11 @@ public class PatientView {
 		dash.setAlignment(Pos.CENTER);
 		dash.setHgap(50);
 		dash.setVgap(50);
-		HBox header = createHeader();
-		HBox infoBox = createInfoBox();
 		
-		dash.add(header, 0, 0);
-		dash.add(infoBox, 0, 1);
+		dash.add(createHeader(), 0, 0);
+		dash.add(createInfoBox(), 0, 1);
+		dash.add(messager.createMessageBox(), 0, 3);
 		
-		
-		
-		Button logoutButton = new Button("Logout");
-		logoutButton.setOnAction(e -> {
-			logout();
-		});
-		
-//		hello.getChildren().addAll(identifier, logoutButton);
 		
 		return new Scene(dash, width, height);
 	}
@@ -81,9 +73,14 @@ public class PatientView {
 		Text birthday = new Text(patient.getDOB());
 		VBox id = new VBox(name, birthday);
 		
+		Button logoutButton = new Button("Logout");
+		logoutButton.setOnAction(e -> {
+			logout();
+		});
+		
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
-		header.getChildren().addAll(logoView, id);	
+		header.getChildren().addAll(logoView, id, logoutButton);	
 		
 		return header;
 	}
@@ -99,8 +96,8 @@ public class PatientView {
 		
 		visitList.setOnMouseClicked(e -> {
 		    if (e.getClickCount() == 2 && !visitList.getItems().get(0).equals("You have no visits")) { // Double-click and ensure it's not the placeholder text
-		        File selectedVisit = new File(visitList.getSelectionModel().getSelectedItem());
-		        patient.showVisit(selectedVisit, stage);
+		        String selectedVisit = visitList.getSelectionModel().getSelectedItem();
+		        control.popup(stage, patient.createVisitScene(selectedVisit), "Visit");
 		    }
 		});
 		
@@ -114,18 +111,19 @@ public class PatientView {
 
 		prescriptionList.setOnMouseClicked(e -> {
 		    if (e.getClickCount() == 2 && !prescriptionList.getItems().get(0).equals("You have no prescriptions")) { // Double-click and ensure it's not the placeholder text
-		        File selectedPrescription = new File(prescriptionList.getSelectionModel().getSelectedItem());
-		        patient.showPrescription(selectedPrescription, stage);
+		        String selectedPrescription = prescriptionList.getSelectionModel().getSelectedItem();
+		        control.popup(stage, patient.createPrescriptionScene(selectedPrescription), "Prescription");
 		    }
 		});
 		
 		VBox prescriptionBox = new VBox(prescriptionLabel, prescriptionList);
 	
-		
+		// combining sections
 		infoBox.getChildren().addAll(visitBox, prescriptionBox);
 		
 		return infoBox;
 	}
+	
 	
 	private void logout() {
 		control.appStart();

@@ -27,6 +27,7 @@ public class Patient {
     private File pharmacyFile;
     private File visitDir;
     private File prescriptionDir;
+    private File messageDir;
     
     public Patient(String firstName, String lastName, LocalDate dob) {
         this.firstName = firstName;
@@ -54,7 +55,9 @@ public class Patient {
         				&& insuranceFile.createNewFile()
         				&& pharmacyFile.createNewFile()
         				&& visitDir.mkdir() 
-        				&& prescriptionDir.mkdir()) {
+        				&& prescriptionDir.mkdir() 
+        				&& messageDir.mkdir())
+        		{
         			saveInfo();
         			return true;
         		} else {
@@ -77,8 +80,10 @@ public class Patient {
     	patientDir = new File(patientDirPath);
     	visitDir = new File(patientDirPath + File.separator + "visits");
     	prescriptionDir = new File(patientDirPath + File.separator + "prescriptions");
+    	messageDir = new File(patientDirPath + File.separator + "messages");
 //    	System.out.println(visitDir.getPath());
     }
+    
     
     private void saveInfo() {
         FileWriter writer = null;
@@ -99,18 +104,16 @@ public class Patient {
         }
     }
     
+    
     public String getName() {
     	return firstName + " " + lastName + " ";
     }
     
+    
     public String getDOB() {
     	return dob.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
     }
-    
-    public File getVisitDir() {
-    	System.out.println("Patients" + File.separator + this.firstName + "_" + this.lastName + "_" + this.dob + File.separator + "visits");
-    	return visitDir;
-    }
+
     
     public ListView<String> getVisitList() {
     	
@@ -139,6 +142,7 @@ public class Patient {
     	return visitList;
     }
     
+    
     public ListView<String> getPrescriptionList() {
     	
     	ListView<String> PrescriptionList = new ListView<>();
@@ -164,58 +168,119 @@ public class Patient {
     	return PrescriptionList;
     }
     
-    public void showVisit(File selectedVisit, Stage parentStage) {
-		Stage popup = new Stage();
-		popup.initOwner(parentStage);
-		popup.initModality(Modality.WINDOW_MODAL);
-        popup.setTitle("Visit");	
-        
-        StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(selectedVisit))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                contentBuilder.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            System.out.println("SYSTEM ERROR (Patient->showVisit)");
-        }
-
-        Text content = new Text(contentBuilder.toString());
-        VBox layout = new VBox(10);
-        layout.setPadding(new Insets(10));
-        layout.getChildren().add(content);
-
-        popup.setScene(new Scene(layout, 300, 200));
-        popup.show();
-	}
     
-    public void showPrescription(File selectedPrescription, Stage parentStage) {
-		Stage popup = new Stage();
-		popup.initOwner(parentStage);
-		popup.initModality(Modality.WINDOW_MODAL);
-        popup.setTitle("Prescription");	
-        
-        StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(selectedPrescription))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                contentBuilder.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            System.out.println("SYSTEM ERROR (Patient->showPrescription)");
-        }
-
-        Text content = new Text(contentBuilder.toString());
-        VBox layout = new VBox(10);
-        layout.setPadding(new Insets(10));
-        layout.getChildren().add(content);
-
-        popup.setScene(new Scene(layout, 300, 200));
-        popup.show();
-	}
-    
-    public File getPrescriptionDir() {
-    	return prescriptionDir;
+    public ListView<String> getMessageList() {
+    	
+    	ListView<String> messageList = new ListView<>();
+    	
+    	if (messageDir != null && messageDir.exists() && messageDir.isDirectory()) {
+		    
+			File[] messageFiles = messageDir.listFiles();
+		    if (messageFiles != null && messageFiles.length > 0) {
+		        for (File file : messageFiles) {
+		            if (file.isFile()) {
+		                messageList.getItems().add(file.getName());
+		            }
+		        }
+		    } else {
+		        // Directory exists but no files found
+		        messageList.getItems().add("You have no messages");
+		    }
+		} else {
+		    // Directory is null or does not exist
+		   messageList.getItems().add("You have no messages");
+		}
+    	
+    	return messageList;
     }
     
+    
+    public Scene createVisitScene(String selectedVisit) {
+        
+//        StringBuilder contentBuilder = new StringBuilder();
+//        try (BufferedReader reader = new BufferedReader(new FileReader(visitDir.getPath() + File.separator + selectedVisit))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                contentBuilder.append(line).append("\n");
+//            }
+//        } catch (IOException e) {
+//            System.out.println("SYSTEM ERROR (Patient->createVisitScene)");
+//        }
+//
+//        Text content = new Text(contentBuilder.toString());
+    	
+    	Text content = fileRead(selectedVisit);
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+        layout.getChildren().add(content);
+
+        return new Scene(layout, 500, 500);
+	}
+  
+    
+    
+    
+    public Scene createPrescriptionScene(String selectedPrescription) {
+        
+//        StringBuilder contentBuilder = new StringBuilder();
+//        try (BufferedReader reader = new BufferedReader(new FileReader(prescriptionDir.getPath() + File.separator + selectedPrescription))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                contentBuilder.append(line).append("\n");
+//            }
+//        } catch (IOException e) {
+//            System.out.println("SYSTEM ERROR (Patient->createPrescriptionScene)");
+//        }
+//
+//        Text content = new Text(contentBuilder.toString());
+    	
+    	Text content = fileRead(selectedPrescription);
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+        layout.getChildren().add(content);
+
+        return new Scene(layout, 500, 500);
+	}
+    
+    
+    public Scene createMessageScene(String selectedMessage) {
+        
+//        StringBuilder contentBuilder = new StringBuilder();
+//        try (BufferedReader reader = new BufferedReader(new FileReader(visitDir.getPath() + File.separator + selectedMessage))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                contentBuilder.append(line).append("\n");
+//            }
+//        } catch (IOException e) {
+//            System.out.println("SYSTEM ERROR (Patient->createMessageScene)");
+//        }
+//
+//        Text content = new Text(contentBuilder.toString());
+    	
+    	Text content = fileRead(selectedMessage);
+    	
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+        layout.getChildren().add(content);
+
+        return new Scene(layout, 500, 500);
+	}
+    
+    
+    private Text fileRead(String filepath) {
+    	StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(visitDir.getPath() + File.separator + filepath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.out.println("SYSTEM ERROR (Patient->createMessageScene)");
+        }
+        
+        return new Text(contentBuilder.toString());
+    }
+
+
+
 }
