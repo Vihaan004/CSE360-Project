@@ -3,11 +3,9 @@
 
 package application;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -21,13 +19,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class LoginView {
@@ -182,7 +177,9 @@ public class LoginView {
 	    Button loginButton = new Button("Login");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    loginButton.setOnAction(e -> {
-	    	if(validateFields(firstNameField, lastNameField, dobField)) { login(); }
+	    	if(validateFields(firstNameField, lastNameField, dobField)) { 
+	    		login(firstNameField, lastNameField, dobField); 
+	    	}
 	    });
 	    
 	   
@@ -229,7 +226,10 @@ public class LoginView {
 	private void register() {
 		
 		Patient patient = new Patient(firstName, lastName, dob);
-		if(patient.accountExists()) { alert.setText("Account already exists, please login"); }
+		if(patient.accountExists()) { 
+			alert.setText("Account already exists, please login");
+			alert.setFill(Color.GREEN);
+		}
 		else if (patient.createAccount()){ 
 			alert.setText("Account created, please login");
 			alert.setFill(Color.GREEN);
@@ -240,13 +240,17 @@ public class LoginView {
 		
 	}
 	
-	private void login() {
+	private void login(TextField fname, TextField lname, DatePicker date) {
 		
 		Patient patient = new Patient(firstName, lastName, dob);
 		if(!patient.accountExists()) { 
 			alert.setText("Account doesn't exist, please register or check credentials");
 			alert.setFill(Color.RED);
 		} else {
+			fname.clear();
+			lname.clear();
+			date.setValue(null);
+			alert.setText("");
 			control.showPatientView(patient);
 		}
 		
