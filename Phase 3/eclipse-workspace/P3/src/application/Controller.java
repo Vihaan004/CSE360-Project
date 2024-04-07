@@ -18,10 +18,6 @@ public class Controller {
 	}
 	
 	public void appStart() {
-		File dir = new File("Patients");
-		if(!dir.exists()) {
-			dir.mkdirs();
-		}
 		loginView.show();
 	}
 	
