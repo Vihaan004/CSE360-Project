@@ -11,10 +11,10 @@ public class Controller {
 	PatientView patientView;
 	
 	Controller (Stage stage, int width, int height) {
-		loginView = new LoginView(stage, width, height);
-		nurseView = new NurseView(stage, width, height);
-		doctorView = new DoctorView(stage, width, height);
-		patientView = new PatientView(stage, width, height);
+		loginView = new LoginView(stage, this, width, height);
+		nurseView = new NurseView(stage, this, width, height);
+		doctorView = new DoctorView(stage, this, width, height);
+		patientView = new PatientView(stage, this, width, height);
 	}
 	
 	public void appStart() {
@@ -22,18 +22,18 @@ public class Controller {
 		if(!dir.exists()) {
 			dir.mkdirs();
 		}
-		loginView.view();
+		loginView.show();
 	}
 	
 	public void showNurseView() {
-		nurseView.view();
+		nurseView.show();
 	}
 	
 	public void showDoctorView() {
-		doctorView.view();
+		doctorView.show();
 	}
 	
 	public void showPatientView() {
-		patientView.view();
+		patientView.show();
 	}
 }

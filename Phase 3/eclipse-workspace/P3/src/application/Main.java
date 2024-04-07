@@ -12,6 +12,7 @@ public class Main extends Application {
 	
 	public void start(Stage primaryStage) {
 		Controller control = new Controller(primaryStage, width, height);
+	    primaryStage.setTitle("AutoPed");
 		control.appStart();
 	}
 	

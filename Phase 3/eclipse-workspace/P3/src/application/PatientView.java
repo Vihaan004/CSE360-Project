@@ -8,16 +8,18 @@ import javafx.stage.Stage;
 public class PatientView {
 	
 	private Stage stage;
+    private Controller control;
 	private int width, height;
 	private Scene patientScene;
 	
-	PatientView(Stage stage, int width, int height) {
+	PatientView(Stage stage, Controller control, int width, int height) {
 		this.stage = stage;
+		this.control = control;
 		this.width = width;
 		this.height = height;
 	}
 	
-	public void view() {
+	public void show() {
 		patientScene = createPortalScene();
 		stage.setScene(patientScene);
 		stage.show();

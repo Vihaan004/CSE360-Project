@@ -4,6 +4,8 @@
 package application;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -34,29 +36,31 @@ public class LoginView {
 	private int width, height;
 	private Scene startupScene;
 	private Scene loginScene;
+	private Controller control;
 	
-	private String userType;
-	private TextField firstName;
-	private TextField lastName;
-	private DatePicker dob;
+	Text alert = new Text("");
+
+	private String firstName;
+    private String lastName;
+    private LocalDate dob;
 	
-	LoginView(Stage stage, int width, int height) {
+	LoginView(Stage stage, Controller control, int width, int height) {
 		this.stage = stage;
+		this.control = control;
 		this.width = width;
 		this.height = height;
+		startupScene = createStartupScene();
+		loginScene = createLoginScene();
 	}
 	
 	// startup page
-	public void view() {
-		startupScene = createStartupScene();
+	public void show() {
 		stage.setScene(startupScene);
-	    stage.setTitle("AutoPed");
 	    stage.show();
 	}
 	
 	// login page
 	private void loginPage() {
-		loginScene = createLoginScene();
 		stage.setScene(loginScene);
 	    stage.show();
 	}
@@ -88,21 +92,18 @@ public class LoginView {
 	    Button patientButton = new Button("Patient");
 	    patientButton.setMinSize(100, 50);
 	    patientButton.setOnAction(e -> {
-	        userType = "patient";
 	        loginPage();
 	    });
 
 	    Button nurseButton = new Button("Nurse");
 	    nurseButton.setMinSize(100, 50);
 	    nurseButton.setOnAction(e -> {
-	        userType = "nurse";
 	        control.showNurseView();
 	    });
 
 	    Button doctorButton = new Button("Doctor");
 	    doctorButton.setMinSize(100, 50);
 	    doctorButton.setOnAction(e -> {
-	        userType = "doctor";
 	        control.showDoctorView();
 	    });
 
@@ -111,9 +112,9 @@ public class LoginView {
 	    grid.add(buttonBox, 3, 0);
 
 	    // Scene setup
-	    Scene startupScene = new Scene(grid, width, height);
-		startupScene.getRoot().requestFocus();
-		return startupScene;
+//	    Scene startupScene = new Scene(grid, width, height);
+//		startupScene.getRoot().requestFocus();
+		return new Scene(grid, width, height);
 	    
 	}
 
@@ -142,27 +143,26 @@ public class LoginView {
 	    HBox firstNameBox = new HBox(21);
 	    firstNameBox.setAlignment(Pos.CENTER_LEFT); 
 	    Label firstNameLabel = new Label("First Name:");
-	    firstName = new TextField(); 							// class var
+	    TextField firstNameField = new TextField(); 							// class var
 //	    firstName.setPromptText("");
-	    firstNameBox.getChildren().addAll(firstNameLabel, firstName); 
+	    firstNameBox.getChildren().addAll(firstNameLabel, firstNameField); 
 	    
 	    
 	    HBox lastNameBox = new HBox(21);
 	    lastNameBox.setAlignment(Pos.CENTER_LEFT);
 	    Label lastNameLabel = new Label("Last Name:");
-	    lastName = new TextField(); 							// class var
+	    TextField lastNameField = new TextField(); 							// class var
 //	    lastName.setPromptText("last name");
-	    lastNameBox.getChildren().addAll(lastNameLabel, lastName); 
+	    lastNameBox.getChildren().addAll(lastNameLabel, lastNameField); 
 	    
 	    
 	    HBox dateBox = new HBox(10);
 	    dateBox.setAlignment(Pos.CENTER_LEFT);
 	    Label dobLabel = new Label("Date of Birth:");
-	    dob = new DatePicker();									// class var
-	    dob.setPromptText("MM/DD/YYYY");
-	    dateBox.getChildren().addAll(dobLabel, dob);
+	    DatePicker dobField = new DatePicker();									// class var
+	    dobField.setPromptText("MM/DD/YYYY");
+	    dateBox.getChildren().addAll(dobLabel, dobField);
 	    
-	    Text alert = new Text(userType);
 	    alert.setFont(Font.font("verdana", 12));
 	    alert.setFill(Color.RED);
 	    
@@ -174,23 +174,23 @@ public class LoginView {
 	    	control.appStart();
 	    });
 	    
-	    Button signupButton = new Button("Sign Up");
-	    signupButton.setOnAction(e -> {
-	    	login(alert, true); // login(alert, newAccount)
+	    Button registerButton = new Button("Sign Up");
+	    registerButton.setOnAction(e -> {
+	    	if(validateFields(firstNameField, lastNameField, dobField)) { register(); }
 	    });
 	    
 	    Button loginButton = new Button("Sign In");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    // login functionality, authentication
 	    loginButton.setOnAction(e -> {
-	    	login(alert, false); // login(alert, newAccount)
+	    	if(validateFields(firstNameField, lastNameField, dobField)) { login(); }
 	    });
 	    
 	   
 //	    Region spacer = new Region();
 //	    HBox.setHgrow(spacer, Priority.ALWAYS); 
 	    
-	    buttonBox.getChildren().addAll(backButton, signupButton, loginButton);
+	    buttonBox.getChildren().addAll(backButton, registerButton, loginButton);
 	    
 	    VBox.setMargin(buttonBox, new Insets(20, 0, 0, 0));
 	    
@@ -200,10 +200,10 @@ public class LoginView {
 	    grid.add(loginBox, 2, 0);
 		
 	    // scene setup
-        Scene loginScene = new Scene(grid, width, height);
-	    loginScene.getRoot().requestFocus();
+//        Scene loginScene = new Scene(grid, width, height);
+//	    loginScene.getRoot().requestFocus();
 	    
-	    return loginScene;
+	    return new Scene(grid, width, height);
 	}
 	
 	// create common logo section with specified prompt
@@ -227,18 +227,41 @@ public class LoginView {
 	    return logoBox;
 	}
 	
-	
-	private void login(Text alert, boolean newAccount) {
-		
-		// check for exisiting account
-		if(!newAccount) {
-			String filename = "Patients" + File.separator + firstName.getText() + lastName.getText() + dob.getValue();
-		}
-		
-		Patient patient = new Patient(firstName.getText(), lastName.getText(), dob.getValue());
-		if (newAccount) { patient.saveAccount(); }
-		patient.openPortal(stage);
-		
+	private void register() {
+//		alert.setText("registered " + dob.format(DateTimeFormatter.ofPattern("dd LLLL yyyy")));
+//		alert.setFill(Color.GREEN);
 	}
+	
+	private void login() {
+//		alert.setText("registered " + dob.format(DateTimeFormatter.ofPattern("dd LLLL yyyy")));
+//		alert.setFill(Color.GREEN);
+	}
+	
+	private boolean validateFields(TextField firstNameField, TextField lastNameField, DatePicker dobField) {
+	    firstName = firstNameField.getText().trim();
+	    lastName = lastNameField.getText().trim();
+	    dob = dobField.getValue();
+	    
+	    if (firstName.isEmpty() || lastName.isEmpty()) {
+	        alert.setText("First name and last name required");
+	        alert.setFill(Color.RED);
+	        return false;
+	    }
+	    
+	    if (dob == null) {
+	        alert.setText("Please enter a valid date of birth.");
+	        alert.setFill(Color.RED);
+	        return false;
+	    }
+	    
+	    if (dob.isAfter(LocalDate.now())) {
+	        alert.setText("Date of birth cannot be in the future.");
+	        alert.setFill(Color.RED);
+	        return false;
+	    }
+
+	    return true;
+	}
+
 	
 }
