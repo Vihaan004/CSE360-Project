@@ -25,6 +25,10 @@ public class Controller {
 		patientView = new PatientView(stage, this, width, height);
 	}
 	
+	Controller () {
+		
+	}
+	
 	public void appStart() {
 		loginView.show();
 	}

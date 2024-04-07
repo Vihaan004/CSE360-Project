@@ -29,10 +29,13 @@ public class Patient {
     private File prescriptionDir;
     private File messageDir;
     
+//    public Messager messager;
+    
     public Patient(String firstName, String lastName, LocalDate dob) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
+//		messager = new Messager();
     }
     
     public boolean accountExists() {

@@ -11,11 +11,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,7 +26,6 @@ public class PatientView {
 	
 	private Stage stage;
     private Controller control;
-    private Messager messager;
 	private int width, height;
 	private Scene patientScene;
 	private Patient patient;
@@ -49,12 +50,15 @@ public class PatientView {
 		
 		GridPane dash = new GridPane();
 		dash.setAlignment(Pos.CENTER);
-		dash.setHgap(50);
-		dash.setVgap(50);
+		dash.setHgap(30);
+		dash.setVgap(30);
+		dash.setPadding(new Insets(20,20,20,20));
 		
 		dash.add(createHeader(), 0, 0);
-		dash.add(createInfoBox(), 0, 1);
-		dash.add(messager.createMessageBox(), 0, 3);
+		dash.add(createVisitBox(), 0, 1);
+		dash.add(createPrescriptionBox(), 1, 1);
+		dash.add(createViewMessageBox(), 0, 2);
+		dash.add(createSendMessageBox(), 1, 2);
 		
 		
 		return new Scene(dash, width, height);
@@ -70,8 +74,11 @@ public class PatientView {
 	    logoView.setPreserveRatio(true);
 	    
 		Text name = new Text(patient.getName());
+		name.setFont(Font.font("verdana", 16));
 		Text birthday = new Text(patient.getDOB());
-		VBox id = new VBox(name, birthday);
+		birthday.setFont(Font.font("verdana", 16));
+		VBox idBox = new VBox(name, birthday);
+		idBox.setAlignment(Pos.CENTER);
 		
 		Button logoutButton = new Button("Logout");
 		logoutButton.setOnAction(e -> {
@@ -80,16 +87,13 @@ public class PatientView {
 		
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
-		header.getChildren().addAll(logoView, id, logoutButton);	
+		header.getChildren().addAll(logoView, idBox, logoutButton);	
 		
 		return header;
 	}
 	
-	private HBox createInfoBox() {
-		HBox infoBox = new HBox(100);
-		infoBox.setAlignment(Pos.CENTER);
-		
-		// visit section
+	
+	private VBox createVisitBox() {
 		Label visitLabel = new Label("Visits");
 		
 		ListView<String> visitList = patient.getVisitList();
@@ -101,10 +105,11 @@ public class PatientView {
 		    }
 		});
 		
-		VBox visitBox = new VBox(visitLabel, visitList);
-
-		
-		// prescription section
+		return new VBox(visitLabel, visitList);
+	}
+	
+	
+	private VBox createPrescriptionBox() {
 		Label prescriptionLabel = new Label("Prescription");
 
 		ListView<String> prescriptionList = patient.getPrescriptionList();
@@ -116,12 +121,37 @@ public class PatientView {
 		    }
 		});
 		
-		VBox prescriptionBox = new VBox(prescriptionLabel, prescriptionList);
+		return new VBox(prescriptionLabel, prescriptionList);
+	}
+
 	
-		// combining sections
-		infoBox.getChildren().addAll(visitBox, prescriptionBox);
+	private VBox createViewMessageBox() {
+		Label viewMessageLabel = new Label("Messages");
 		
-		return infoBox;
+		ListView<String> messageList = patient.getVisitList();
+		
+		messageList.setOnMouseClicked(e -> {
+		    if (e.getClickCount() == 2 && !messageList.getItems().get(0).equals("You have no visits")) { // Double-click and ensure it's not the placeholder text
+		        String selectedMessage = messageList.getSelectionModel().getSelectedItem();
+		        control.popup(stage, patient.createVisitScene(selectedMessage), "Visit");
+		    }
+		});
+		
+		return new VBox(viewMessageLabel, messageList);
+	}
+	
+	
+	private VBox createSendMessageBox() {
+		Label sendMessageLabel = new Label("Send a message");
+		
+		TextArea messageArea = new TextArea();
+		messageArea.setPrefWidth(100);
+		messageArea.setPrefHeight(270);
+		messageArea.setPromptText("Enter your message here");
+		
+		Button sendButton = new Button("Send");
+		
+		return new VBox(sendMessageLabel, messageArea, sendButton);
 	}
 	
 	
