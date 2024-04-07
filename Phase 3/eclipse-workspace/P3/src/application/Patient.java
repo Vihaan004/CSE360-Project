@@ -25,8 +25,8 @@ public class Patient {
         	try {
         		// create info file, directories for visits and prescriptions
         		if(new File(patientDir, "info.txt").createNewFile() 
-        				&& new File(patientDir, "visits.txt").mkdir() 
-        				&& new File(patientDir, "prescriptions.txt").mkdir()) {
+        				&& new File(patientDir, "visits").mkdir() 
+        				&& new File(patientDir, "prescriptions").mkdir()) {
         			return true;
         		} else {
         			// clean up if dir creation fails
@@ -45,6 +45,10 @@ public class Patient {
     
     private String buildPath() {
         return "Patients" + File.separator + this.firstName + "_" + this.lastName + "_" + this.dob;
+    }
+    
+    public String getName() {
+    	return firstName + " " + lastName;
     }
     
 }

@@ -181,7 +181,6 @@ public class LoginView {
 	    
 	    Button loginButton = new Button("Login");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
-	    // login functionality, authentication
 	    loginButton.setOnAction(e -> {
 	    	if(validateFields(firstNameField, lastNameField, dobField)) { login(); }
 	    });
@@ -244,36 +243,43 @@ public class LoginView {
 	private void login() {
 		
 		Patient patient = new Patient(firstName, lastName, dob);
-		if(!patient.accountExists()) { alert.setText("Account doesn't exist, please register or check credentials"); }
+		if(!patient.accountExists()) { 
+			alert.setText("Account doesn't exist, please register or check credentials");
+			alert.setFill(Color.RED);
+		} else {
+			control.showPatientView(patient);
+		}
 		
 		
 	}
 	
 	private boolean validateFields(TextField firstNameField, TextField lastNameField, DatePicker dobField) {
 	    firstName = firstNameField.getText().trim();
-	    firstName = firstName.substring(0,1).toUpperCase() + firstName.substring(1).toLowerCase();
-	    lastName = lastNameField.getText().trim().toLowerCase();
-	    lastName = lastName.substring(0,1).toUpperCase() + lastName.substring(1).toLowerCase();
-	    dob = dobField.getValue();
-	    
+	    lastName = lastNameField.getText().trim();
 	    if (firstName.isEmpty() || lastName.isEmpty()) {
-	        alert.setText("First name and last name required");
-	        alert.setFill(Color.RED);
-	        return false;
-	    }
+	    	alert.setText("First name and last name required");
+	    	alert.setFill(Color.RED);
+	    	return false;
+	    } 
 	    
-	    if (dob == null) {
-	        alert.setText("Please enter a valid date of birth.");
-	        alert.setFill(Color.RED);
-	        return false;
-	    }
-	    
-	    if (dob.isAfter(LocalDate.now())) {
-	        alert.setText("Date of birth cannot be in the future.");
+	    try {
+	    	LocalDate.parse(dobField.getEditor().getText(), DateTimeFormatter.ofPattern("M/d/yyyy"));
+	    	dob = dobField.getValue();	
+	    } catch (Exception e) {
+	    	alert.setText("Invalid date format. Use MM/DD/YYYY.");
 	        alert.setFill(Color.RED);
 	        return false;
 	    }
 
+	    
+	    if (dob == null || dob.isAfter(LocalDate.now())) {
+	        alert.setText("Please enter a valid date of birth.");
+	        alert.setFill(Color.RED);
+	        return false;
+	    }
+	   
+	    firstName = firstName.substring(0,1).toUpperCase() + firstName.substring(1).toLowerCase();
+	    lastName = lastName.substring(0,1).toUpperCase() + lastName.substring(1).toLowerCase();
 	    return true;
 	}
 	

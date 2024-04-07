@@ -33,7 +33,7 @@ public class Controller {
 		doctorView.show();
 	}
 	
-	public void showPatientView() {
-		patientView.show();
+	public void showPatientView(Patient patient) {
+		patientView.show(patient);
 	}
 }
