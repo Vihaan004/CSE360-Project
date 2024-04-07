@@ -174,12 +174,12 @@ public class LoginView {
 	    	control.appStart();
 	    });
 	    
-	    Button registerButton = new Button("Sign Up");
+	    Button registerButton = new Button("Register");
 	    registerButton.setOnAction(e -> {
 	    	if(validateFields(firstNameField, lastNameField, dobField)) { register(); }
 	    });
 	    
-	    Button loginButton = new Button("Sign In");
+	    Button loginButton = new Button("Login");
 	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    // login functionality, authentication
 	    loginButton.setOnAction(e -> {
@@ -228,18 +228,32 @@ public class LoginView {
 	}
 	
 	private void register() {
-//		alert.setText("registered " + dob.format(DateTimeFormatter.ofPattern("dd LLLL yyyy")));
-//		alert.setFill(Color.GREEN);
+		
+		Patient patient = new Patient(firstName, lastName, dob);
+		if(patient.accountExists()) { alert.setText("Account already exists, please login"); }
+		else if (patient.createAccount()){ 
+			alert.setText("Account created, please login");
+			alert.setFill(Color.GREEN);
+		} else {
+			alert.setText("SYSTEM ERROR");
+			alert.setFill(Color.RED);
+		}
+		
 	}
 	
 	private void login() {
-//		alert.setText("registered " + dob.format(DateTimeFormatter.ofPattern("dd LLLL yyyy")));
-//		alert.setFill(Color.GREEN);
+		
+		Patient patient = new Patient(firstName, lastName, dob);
+		if(!patient.accountExists()) { alert.setText("Account doesn't exist, please register or check credentials"); }
+		
+		
 	}
 	
 	private boolean validateFields(TextField firstNameField, TextField lastNameField, DatePicker dobField) {
 	    firstName = firstNameField.getText().trim();
-	    lastName = lastNameField.getText().trim();
+	    firstName = firstName.substring(0,1).toUpperCase() + firstName.substring(1).toLowerCase();
+	    lastName = lastNameField.getText().trim().toLowerCase();
+	    lastName = lastName.substring(0,1).toUpperCase() + lastName.substring(1).toLowerCase();
 	    dob = dobField.getValue();
 	    
 	    if (firstName.isEmpty() || lastName.isEmpty()) {
@@ -262,6 +276,5 @@ public class LoginView {
 
 	    return true;
 	}
-
 	
 }

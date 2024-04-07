@@ -2,9 +2,7 @@ package application;
 
 import java.time.LocalDate;
 
-public class Doctor extends User {
+public class Doctor {
 	
-	Doctor(String firstName, String lastName, LocalDate dob) {
-		super(firstName, lastName, dob);
-	}
+	
 }

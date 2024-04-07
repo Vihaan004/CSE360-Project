@@ -1,6 +1,7 @@
 package application;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class Patient {
@@ -15,23 +16,35 @@ public class Patient {
     }
     
     public boolean accountExists() {
-        String path = buildFilePath();
-        File file = new File(path);
-        return file.exists();
+        return new File(buildPath()).exists();
     }
     
-    public void saveAccount() {
-        if (!accountExists()) {
-            String path = buildFilePath();
-            new File(path).mkdirs();
-            // TODO: Create and initialize info.txt, visits.txt, prescriptions.txt
+    public boolean createAccount() {
+        File patientDir = new File(buildPath());
+        if(patientDir.mkdirs()) {
+        	try {
+        		// create info file, directories for visits and prescriptions
+        		if(new File(patientDir, "info.txt").createNewFile() 
+        				&& new File(patientDir, "visits.txt").mkdir() 
+        				&& new File(patientDir, "prescriptions.txt").mkdir()) {
+        			return true;
+        		} else {
+        			// clean up if dir creation fails
+        			patientDir.delete();
+        			return false;
+        		}
+        	} catch (IOException e) {
+        		patientDir.delete();
+        		return false;
+        	}
+        } else {
+        	patientDir.delete();
+        	return false;
         }
-        // Else, handle the case where the account already exists (e.g., show an error message)
     }
     
-    private String buildFilePath() {
+    private String buildPath() {
         return "Patients" + File.separator + this.firstName + "_" + this.lastName + "_" + this.dob;
     }
     
-    // Other patient-related methods, such as opening the patient portal
 }
