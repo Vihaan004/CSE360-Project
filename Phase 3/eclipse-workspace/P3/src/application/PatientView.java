@@ -84,6 +84,7 @@ public class PatientView {
 		logoutButton.setOnAction(e -> {
 			logout();
 		});
+//		logoutButton.setAlignment(Pos.CENTER_RIGHT);
 		
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
