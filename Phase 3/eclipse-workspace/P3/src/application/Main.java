@@ -7,8 +7,8 @@ import javafx.scene.layout.BorderPane;
 
 
 public class Main extends Application {
-	int width = 1000;
-	int height = 800;
+	int width = 1400;
+	int height = 900;
 	
 	public void start(Stage primaryStage) {
 		Controller control = new Controller(primaryStage, width, height);
