@@ -138,8 +138,7 @@ public class LoginView {
 	    HBox firstNameBox = new HBox(21);
 	    firstNameBox.setAlignment(Pos.CENTER_LEFT); 
 	    Label firstNameLabel = new Label("First Name:");
-	    TextField firstNameField = new TextField(); 							// class var
-//	    firstName.setPromptText("");
+	    TextField firstNameField = new TextField(); 						// class var
 	    firstNameBox.getChildren().addAll(firstNameLabel, firstNameField); 
 	    
 	    
@@ -147,14 +146,13 @@ public class LoginView {
 	    lastNameBox.setAlignment(Pos.CENTER_LEFT);
 	    Label lastNameLabel = new Label("Last Name:");
 	    TextField lastNameField = new TextField(); 							// class var
-//	    lastName.setPromptText("last name");
 	    lastNameBox.getChildren().addAll(lastNameLabel, lastNameField); 
 	    
 	    
 	    HBox dateBox = new HBox(10);
 	    dateBox.setAlignment(Pos.CENTER_LEFT);
 	    Label dobLabel = new Label("Date of Birth:");
-	    DatePicker dobField = new DatePicker();									// class var
+	    DatePicker dobField = new DatePicker();								// class var
 	    dobField.setPromptText("MM/DD/YYYY");
 	    dateBox.getChildren().addAll(dobLabel, dobField);
 	    
