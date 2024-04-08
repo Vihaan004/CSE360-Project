@@ -64,7 +64,6 @@ public class PatientView {
 		
 		return new Scene(dash, width, height);
 		
-		
 	}
 	
 	
@@ -105,6 +104,7 @@ public class PatientView {
 		visitList.setOnMouseClicked(e -> {
 		    if (e.getClickCount() == 2 && !visitList.getItems().get(0).equals("You have no visits")) { // Double-click and ensure it's not the placeholder text
 		        String selectedVisit = visitList.getSelectionModel().getSelectedItem();
+		        System.out.println(selectedVisit + " opened");
 		        control.popup(stage, patient.createVisitScene(selectedVisit), "Visit");
 		    }
 		});
@@ -121,6 +121,7 @@ public class PatientView {
 		prescriptionList.setOnMouseClicked(e -> {
 		    if (e.getClickCount() == 2 && !prescriptionList.getItems().get(0).equals("You have no prescriptions")) { // Double-click and ensure it's not the placeholder text
 		        String selectedPrescription = prescriptionList.getSelectionModel().getSelectedItem();
+		        System.out.println(selectedPrescription + " opened");
 		        control.popup(stage, patient.createPrescriptionScene(selectedPrescription), "Prescription");
 		    }
 		});
@@ -134,18 +135,21 @@ public class PatientView {
 		Label contactLabel = new Label("Contact");
 		
 		TextArea contactArea = new TextArea();
+		contactArea.setText(patient.getContactInfo());
 		contactArea.setPrefSize(200, 300);
 		contactArea.setPromptText("Contact information");
 		
 		Label insuranceLabel = new Label("Insurance");
 		
 		TextArea insuranceArea = new TextArea();
+		insuranceArea.setText(patient.getInsuranceInfo());
 		insuranceArea.setPrefSize(200, 300);
 		insuranceArea.setPromptText("Insurance ID/information");
 		
 		Label pharmacyLabel = new Label("Pharmacy");
 		
 		TextArea pharmacyArea = new TextArea();
+		pharmacyArea.setText(patient.getPharmacyInfo());
 		pharmacyArea.setPrefSize(200, 300);
 	    pharmacyArea.setPromptText("Pharmacy");
 		
@@ -175,7 +179,8 @@ public class PatientView {
 		messageList.setOnMouseClicked(e -> {
 		    if (e.getClickCount() == 2 && !messageList.getItems().get(0).equals("You have no messages")) { // Double-click and ensure it's not the placeholder text
 		        String selectedMessage = messageList.getSelectionModel().getSelectedItem();
-		        control.popup(stage, patient.createVisitScene(selectedMessage), "Visit");
+		        System.out.println(selectedMessage + " opened");
+		        control.popup(stage, patient.createMessageScene(selectedMessage), "Message");
 		    }
 		});
 		
@@ -194,7 +199,7 @@ public class PatientView {
 		Button sendButton = new Button("Send");
 		sendButton.setOnAction(e -> {
 			if(!messageArea.getText().isEmpty()) {
-				patient.saveMessage(messageArea.getText());	
+				patient.saveMessage(patient.getName(), messageArea.getText());	
 				alert.setText("Message sent");
 				alert.setFill(Color.GREEN);
 			}
@@ -211,6 +216,7 @@ public class PatientView {
 	
 	
 	private void logout() {
+		alert.setText("");
 		control.appStart();
 	}
 	

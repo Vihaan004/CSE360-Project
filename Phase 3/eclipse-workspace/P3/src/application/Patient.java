@@ -37,8 +37,8 @@ public class Patient {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-        buildFiles();		
 		buildDirs();
+		buildFiles();		
     }
     
     public boolean accountExists() {
@@ -57,6 +57,7 @@ public class Patient {
 //        		insuranceFile = new File(patientDir, "insurance.txt");
 //        		pharmacyFile = new File(patientDir, "pharmacy.txt");
         		
+        		System.out.println("yay");
         		if(infoFile.createNewFile() 
         				&& contactFile.createNewFile()
         				&& vitalsFile.createNewFile()
@@ -66,8 +67,7 @@ public class Patient {
         				&& prescriptionDir.mkdir() 
         				&& messageDir.mkdir())
         		{
-        			System.out.println("yay");
-        			fileWrite(infoFile.getPath(), getName() + "\n" + getDOB() +" \n");
+        			fileWrite(infoFile.getName(), patientDir, getName() + "\n" + getDOB() +" \n");
         			return true;
         		} else {
         			// clean up if dir creation fails
@@ -101,30 +101,10 @@ public class Patient {
     }
     
     public void editInfo(String contact, String insurance, String pharmacy) {
-    	fileWrite(contactFile.getPath(), contact);
-    	fileWrite(insuranceFile.getPath(), insurance);
-    	fileWrite(pharmacyFile.getPath(), pharmacy);
+    	fileWrite(contactFile.getName(), patientDir, contact);
+    	fileWrite(insuranceFile.getName(), patientDir, insurance);
+    	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
     }
-    
-    private void fileWrite(String filepath, String content) {
-    	FileWriter writer = null;
-        try {
-            writer = new FileWriter(new File(filepath));
-            writer.write(content + "\n");
-            System.out.println("Data Written in file: " + filepath);
-        } catch (IOException e) {
-            System.out.println("SYSTEM ERROR:Patient->fileWrite : " + filepath);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    System.out.println("SYSTEM ERROR: Patient->saveWrite : " + filepath);
-                }
-            }
-        }
-    }
-    
     
     public String getName() {
     	return firstName + " " + lastName + " ";
@@ -133,6 +113,18 @@ public class Patient {
     
     public String getDOB() {
     	return dob.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+    }
+    
+    public String getContactInfo() {
+    	return fileRead(contactFile.getName(), patientDir);
+    }
+    
+    public String getInsuranceInfo() {
+    	return fileRead(insuranceFile.getName(), patientDir);
+    }
+    
+    public String getPharmacyInfo() {
+    	return fileRead(pharmacyFile.getName(), patientDir);
     }
 
     
@@ -217,111 +209,90 @@ public class Patient {
     
     
     public Scene createVisitScene(String selectedVisit) {
-        
-//        StringBuilder contentBuilder = new StringBuilder();
-//        try (BufferedReader reader = new BufferedReader(new FileReader(visitDir.getPath() + File.separator + selectedVisit))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                contentBuilder.append(line).append("\n");
-//            }
-//        } catch (IOException e) {
-//            System.out.println("SYSTEM ERROR (Patient->createVisitScene)");
-//        }
-//
-//        Text content = new Text(contentBuilder.toString());
     	
-    	Text content = fileRead(selectedVisit);
+    	String content = fileRead(selectedVisit, visitDir);
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
-        layout.getChildren().add(content);
+        layout.getChildren().add(new Text(content));
 
         return new Scene(layout, 500, 500);
 	}
-  
-    
-    
+     
     
     public Scene createPrescriptionScene(String selectedPrescription) {
-        
-//        StringBuilder contentBuilder = new StringBuilder();
-//        try (BufferedReader reader = new BufferedReader(new FileReader(prescriptionDir.getPath() + File.separator + selectedPrescription))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                contentBuilder.append(line).append("\n");
-//            }
-//        } catch (IOException e) {
-//            System.out.println("SYSTEM ERROR (Patient->createPrescriptionScene)");
-//        }
-//
-//        Text content = new Text(contentBuilder.toString());
     	
-    	Text content = fileRead(selectedPrescription);
+    	String content = fileRead(selectedPrescription, prescriptionDir);
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
-        layout.getChildren().add(content);
+        layout.getChildren().add(new Text(content));
 
         return new Scene(layout, 500, 500);
 	}
     
     
     public Scene createMessageScene(String selectedMessage) {
-        
-//        StringBuilder contentBuilder = new StringBuilder();
-//        try (BufferedReader reader = new BufferedReader(new FileReader(visitDir.getPath() + File.separator + selectedMessage))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                contentBuilder.append(line).append("\n");
-//            }
-//        } catch (IOException e) {
-//            System.out.println("SYSTEM ERROR (Patient->createMessageScene)");
-//        }
-//
-//        Text content = new Text(contentBuilder.toString());
     	
-    	Text content = fileRead(selectedMessage);
+    	String content = fileRead(selectedMessage, messageDir);
     	
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
-        layout.getChildren().add(content);
+        layout.getChildren().add(new Text(content));
 
         return new Scene(layout, 500, 500);
 	}
     
     
-    private Text fileRead(String filepath) {
+    private String fileRead(String filename, File dir) {
+    	
     	StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(visitDir.getPath() + File.separator + filepath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(dir.getPath() + File.separator + filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 contentBuilder.append(line).append("\n");
             }
         } catch (IOException e) {
-            System.out.println("SYSTEM ERROR (Patient->createMessageScene)");
+            System.out.println("SYSTEM ERROR: Patient->fileRead : " + filename);
         }
         
-        return new Text(contentBuilder.toString());
+        return contentBuilder.toString();
     }
 
+
+    private void fileWrite(String filename, File dir, String content) {
+    	FileWriter writer = null;
+        try {
+            writer = new FileWriter(new File(dir.getPath() + File.separator + filename));
+            writer.write(content + "\n");
+            System.out.println("Data Written in file: " + filename);
+        } catch (IOException e) {
+            System.out.println("SYSTEM ERROR:Patient->fileWrite : " + filename);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("SYSTEM ERROR: Patient->saveWrite : " + filename);
+                }
+            }
+        }
+    }
     
-    public void saveMessage(String message) {
+    
+    public void saveMessage(String sender, String message) {
     	LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
-        String filename = formattedDateTime + ".txt";
-        
-        // Ensuring the message directory exists
-        if (!messageDir.exists()) {
-            messageDir.mkdirs();
-        }
+        String filename = sender + formattedDateTime + ".txt";
 
-        File messageFile = new File(messageDir, filename);
-
-        try (FileWriter writer = new FileWriter(messageFile)) {
-            writer.write(message);
-        } catch (IOException e) {
-            System.out.println("SYSTEM ERROR (Patient->saveMessage): " + e.getMessage());
-        }
+//        File messageFile = new File(messageDir, filename);
+        fileWrite(filename, messageDir, message);
+//
+//        try (FileWriter writer = new FileWriter(messageFile)) {
+//            writer.write(message);
+//        } catch (IOException e) {
+//            System.out.println("SYSTEM ERROR (Patient->saveMessage): " + e.getMessage());
+//        }
     }
 
 }
