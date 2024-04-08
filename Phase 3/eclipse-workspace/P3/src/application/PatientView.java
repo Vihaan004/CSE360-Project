@@ -128,10 +128,10 @@ public class PatientView {
 	private VBox createViewMessageBox() {
 		Label viewMessageLabel = new Label("Messages");
 		
-		ListView<String> messageList = patient.getVisitList();
+		ListView<String> messageList = patient.getMessageList();
 		
 		messageList.setOnMouseClicked(e -> {
-		    if (e.getClickCount() == 2 && !messageList.getItems().get(0).equals("You have no visits")) { // Double-click and ensure it's not the placeholder text
+		    if (e.getClickCount() == 2 && !messageList.getItems().get(0).equals("You have no messages")) { // Double-click and ensure it's not the placeholder text
 		        String selectedMessage = messageList.getSelectionModel().getSelectedItem();
 		        control.popup(stage, patient.createVisitScene(selectedMessage), "Visit");
 		    }
@@ -150,6 +150,10 @@ public class PatientView {
 		messageArea.setPromptText("Enter your message here");
 		
 		Button sendButton = new Button("Send");
+		sendButton.setOnAction(e -> {
+			if(!messageArea.getText().isEmpty())
+				patient.saveMessage(messageArea.getText());
+		});
 		
 		return new VBox(sendMessageLabel, messageArea, sendButton);
 	}

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javafx.geometry.Insets;
@@ -29,13 +30,10 @@ public class Patient {
     private File prescriptionDir;
     private File messageDir;
     
-//    public Messager messager;
-    
     public Patient(String firstName, String lastName, LocalDate dob) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-//		messager = new Messager();
     }
     
     public boolean accountExists() {
@@ -284,6 +282,49 @@ public class Patient {
         return new Text(contentBuilder.toString());
     }
 
+    
+    public void saveMessage(String message) {
+    	LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
+        String formattedDateTime = now.format(formatter);
+        
+        // Constructing the filename with the current date and time, replacing slashes with dashes
+        String filename = formattedDateTime + ".txt";
+        
+        // Ensuring the message directory exists
+        if (!messageDir.exists()) {
+            messageDir.mkdirs();
+        }
 
+        // Creating the file under messageDir with the constructed filename
+        File messageFile = new File(messageDir, filename);
+
+        // Using try-with-resources to handle the FileWriter automatically
+        try (FileWriter writer = new FileWriter(messageFile)) {
+            writer.write(message);
+        } catch (IOException e) {
+            System.out.println("SYSTEM ERROR (Patient->saveMessage): " + e.getMessage());
+        }
+    }
+    
+    
+//    LocalDateTime time = LocalDateTime.now();
+//	String now = time.format(DateTimeFormatter.ofPattern("MM/dd/yyyy_HH-mm-ss"));
+//	File messageFile = new File(messageDir + File.separator + now + ".txt");
+//	FileWriter writer = null;
+//    try {
+//        writer = new FileWriter(messageFile);
+//        writer.write(message + "\n");
+//    } catch (IOException e) {
+//        System.out.println("SYSTEM ERROR (Patient->saveMessage1)");
+//    } finally {
+//        if (writer != null) {
+//            try {
+//                writer.close();
+//            } catch (IOException e) {
+//                System.out.println("SYSTEM ERROR (Patient->saveMessage)");
+//            }
+//        }
+//    }
 
 }
