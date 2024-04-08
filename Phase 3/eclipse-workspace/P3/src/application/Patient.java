@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 import javafx.geometry.Insets;
@@ -14,8 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 public class Patient {
     private String firstName;
@@ -28,6 +27,7 @@ public class Patient {
     private File insuranceFile;
     private File pharmacyFile;
     
+    private File healthHistoryDir;
     private File patientDir;
     private File visitDir;
     private File prescriptionDir;
@@ -41,33 +41,25 @@ public class Patient {
 		buildFiles();		
     }
     
+    // account management functions
     public boolean accountExists() {
-//    	buildDir();
     	return patientDir.exists();
     }
     
     public boolean createAccount() {
-//        buildDir();
         if(patientDir.mkdirs()) {
         	try {
-        		// create patient files, directories for visits and prescriptions
-//        		infoFile = new File(patientDir, "info.txt");
-//        		contactFile = new File(patientDir, "contact.txt");
-//        		vitalsFile = new File(patientDir, "vitals.txt");
-//        		insuranceFile = new File(patientDir, "insurance.txt");
-//        		pharmacyFile = new File(patientDir, "pharmacy.txt");
-        		
-        		System.out.println("yay");
         		if(infoFile.createNewFile() 
         				&& contactFile.createNewFile()
         				&& vitalsFile.createNewFile()
         				&& insuranceFile.createNewFile()
-        				&& pharmacyFile.createNewFile()
+        				&& pharmacyFile.createNewFile() 
+        				&& healthHistoryDir.mkdir()
         				&& visitDir.mkdir() 
         				&& prescriptionDir.mkdir() 
         				&& messageDir.mkdir())
         		{
-        			fileWrite(infoFile.getName(), patientDir, getName() + "\n" + getDOB() +" \n");
+        			fileWrite(infoFile.getName(), patientDir, getName() + "\n" + getDOB() + " \n" + getAge() + " \n");
         			return true;
         		} else {
         			// clean up if dir creation fails
@@ -83,7 +75,15 @@ public class Patient {
         	return false;
         }
     }
-    
+
+    private void buildDirs() {
+    	String patientDirPath = "Patients" + File.separator + this.firstName + "_" + this.lastName + "_" + this.dob;
+    	patientDir = new File(patientDirPath);
+    	visitDir = new File(patientDirPath + File.separator + "visits");
+    	prescriptionDir = new File(patientDirPath + File.separator + "prescriptions");
+    	messageDir = new File(patientDirPath + File.separator + "messages");
+    	healthHistoryDir = new File(patientDirPath + File.separator + "healthHistory");
+    }
     
     private void buildFiles() {
     	infoFile = new File(patientDir, "info.txt");
@@ -92,27 +92,19 @@ public class Patient {
 		insuranceFile = new File(patientDir, "insurance.txt");
 		pharmacyFile = new File(patientDir, "pharmacy.txt");
     }
-    private void buildDirs() {
-    	String patientDirPath = "Patients" + File.separator + this.firstName + "_" + this.lastName + "_" + this.dob;
-    	patientDir = new File(patientDirPath);
-    	visitDir = new File(patientDirPath + File.separator + "visits");
-    	prescriptionDir = new File(patientDirPath + File.separator + "prescriptions");
-    	messageDir = new File(patientDirPath + File.separator + "messages");
-    }
-    
-    public void editInfo(String contact, String insurance, String pharmacy) {
-    	fileWrite(contactFile.getName(), patientDir, contact);
-    	fileWrite(insuranceFile.getName(), patientDir, insurance);
-    	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
-    }
-    
+
+   
+    // get functions
     public String getName() {
     	return firstName + " " + lastName + " ";
     }
     
-    
     public String getDOB() {
     	return dob.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+    }
+    
+    public String getAge() {
+    	return Integer.toString(Period.between(dob, LocalDate.now()).getYears());
     }
     
     public String getContactInfo() {
@@ -128,6 +120,7 @@ public class Patient {
     }
 
     
+    // fetch data functions
     public ListView<String> getVisitList() {
     	
     	ListView<String> visitList = new ListView<>();
@@ -242,39 +235,11 @@ public class Patient {
 	}
     
     
-    private String fileRead(String filename, File dir) {
-    	
-    	StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(dir.getPath() + File.separator + filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                contentBuilder.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            System.out.println("SYSTEM ERROR: Patient->fileRead : " + filename);
-        }
-        
-        return contentBuilder.toString();
-    }
-
-
-    private void fileWrite(String filename, File dir, String content) {
-    	FileWriter writer = null;
-        try {
-            writer = new FileWriter(new File(dir.getPath() + File.separator + filename));
-            writer.write(content + "\n");
-            System.out.println("Data Written in file: " + filename);
-        } catch (IOException e) {
-            System.out.println("SYSTEM ERROR:Patient->fileWrite : " + filename);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    System.out.println("SYSTEM ERROR: Patient->saveWrite : " + filename);
-                }
-            }
-        }
+    // edit database
+    public void editInfo(String contact, String insurance, String pharmacy) {
+    	fileWrite(contactFile.getName(), patientDir, contact);
+    	fileWrite(insuranceFile.getName(), patientDir, insurance);
+    	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
     }
     
     
@@ -294,5 +259,43 @@ public class Patient {
 //            System.out.println("SYSTEM ERROR (Patient->saveMessage): " + e.getMessage());
 //        }
     }
+
+    
+    // function to read file data
+    private String fileRead(String filename, File dir) {
+    	
+    	StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(dir.getPath() + File.separator + filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.out.println("SYSTEM ERROR: Patient->fileRead : " + filename);
+        }
+        
+        return contentBuilder.toString();
+    }
+
+    // function to write file data
+    private void fileWrite(String filename, File dir, String content) {
+    	FileWriter writer = null;
+        try {
+            writer = new FileWriter(new File(dir.getPath() + File.separator + filename));
+            writer.write(content + "\n");
+            System.out.println("Data Written in file: " + filename);
+        } catch (IOException e) {
+            System.out.println("SYSTEM ERROR:Patient->fileWrite : " + filename);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("SYSTEM ERROR: Patient->saveWrite : " + filename);
+                }
+            }
+        }
+    }
+    
 
 }
