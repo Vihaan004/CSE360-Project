@@ -252,7 +252,6 @@ public class LoginView {
 			control.showPatientView(patient);
 		}
 		
-		
 	}
 	
 	private boolean validateFields(TextField firstNameField, TextField lastNameField, DatePicker dobField) {

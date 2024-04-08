@@ -32,6 +32,8 @@ public class DoctorView {
 		back.setOnAction(e -> {
 			backToLogin();
 		});
+
+		
 		
 		VBox hello = new VBox();
 		hello.getChildren().addAll(h, back);
