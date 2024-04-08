@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -29,12 +30,14 @@ public class PatientView {
 	private int width, height;
 	private Scene patientScene;
 	private Patient patient;
+	private Text alert;
 	
 	PatientView(Stage stage, Controller control, int width, int height) {
 		this.stage = stage;
 		this.control = control;
 		this.width = width;
 		this.height = height;
+		alert = new Text("");
 	}
 	
 	public void show(Patient patient) {
@@ -55,6 +58,7 @@ public class PatientView {
 		dash.add(createHeader(), 0, 0);
 		dash.add(createVisitBox(), 0, 1);
 		dash.add(createPrescriptionBox(), 1, 1);
+		dash.add(createInfoBox(), 2, 1, 1, 2);
 		dash.add(createViewMessageBox(), 0, 2);
 		dash.add(createSendMessageBox(), 1, 2);
 		
@@ -87,7 +91,7 @@ public class PatientView {
 		
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
-		header.getChildren().addAll(logoView, idBox, logoutButton);	
+		header.getChildren().addAll(logoView, idBox, logoutButton, alert);	
 		
 		return header;
 	}
@@ -125,6 +129,44 @@ public class PatientView {
 	}
 
 	
+	private VBox createInfoBox() {
+		
+		Label contactLabel = new Label("Contact");
+		
+		TextArea contactArea = new TextArea();
+		contactArea.setPrefSize(200, 300);
+		contactArea.setPromptText("Contact information");
+		
+		Label insuranceLabel = new Label("Insurance");
+		
+		TextArea insuranceArea = new TextArea();
+		insuranceArea.setPrefSize(200, 300);
+		insuranceArea.setPromptText("Insurance ID/information");
+		
+		Label pharmacyLabel = new Label("Pharmacy");
+		
+		TextArea pharmacyArea = new TextArea();
+		pharmacyArea.setPrefSize(200, 300);
+	    pharmacyArea.setPromptText("Pharmacy");
+		
+		Button editButton = new Button("Edit Info");
+		editButton.setOnAction(e -> {
+			patient.editInfo(contactArea.getText(), insuranceArea.getText(), pharmacyArea.getText());
+			alert.setText("Info saved");
+			alert.setFill(Color.GREEN);
+//			else {
+//				alert.setText("Missing information");
+//				alert.setFill(Color.RED);
+//			}
+		});
+		
+		VBox infoBox = new VBox(20);
+		infoBox.getChildren().addAll(contactLabel, contactArea, insuranceLabel, insuranceArea, pharmacyLabel, pharmacyArea, editButton);
+
+		return infoBox;
+	}
+	
+	
 	private VBox createViewMessageBox() {
 		Label viewMessageLabel = new Label("Messages");
 		
@@ -146,16 +188,25 @@ public class PatientView {
 		
 		TextArea messageArea = new TextArea();
 		messageArea.setPrefWidth(100);
-		messageArea.setPrefHeight(270);
+		messageArea.setPrefHeight(300);
 		messageArea.setPromptText("Enter your message here");
 		
 		Button sendButton = new Button("Send");
 		sendButton.setOnAction(e -> {
-			if(!messageArea.getText().isEmpty())
-				patient.saveMessage(messageArea.getText());
+			if(!messageArea.getText().isEmpty()) {
+				patient.saveMessage(messageArea.getText());	
+				alert.setText("Message sent");
+				alert.setFill(Color.GREEN);
+			}
+			else {
+				alert.setText("Message cannot be empty");
+				alert.setFill(Color.RED);
+			}
 		});
 		
-		return new VBox(sendMessageLabel, messageArea, sendButton);
+		VBox messageBox = new VBox(20);
+		messageBox.getChildren().addAll(sendMessageLabel, messageArea, sendButton);
+		return messageBox;
 	}
 	
 	

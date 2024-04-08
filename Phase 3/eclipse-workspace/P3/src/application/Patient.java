@@ -21,11 +21,14 @@ public class Patient {
     private String firstName;
     private String lastName;
     private LocalDate dob;
-    private File patientDir;
+    
     private File infoFile;
+    private File contactFile;
     private File vitalsFile;
     private File insuranceFile;
     private File pharmacyFile;
+    
+    private File patientDir;
     private File visitDir;
     private File prescriptionDir;
     private File messageDir;
@@ -34,24 +37,28 @@ public class Patient {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
+        buildFiles();		
+		buildDirs();
     }
     
     public boolean accountExists() {
-    	buildDir();
+//    	buildDir();
     	return patientDir.exists();
     }
     
     public boolean createAccount() {
-        buildDir();
+//        buildDir();
         if(patientDir.mkdirs()) {
         	try {
         		// create patient files, directories for visits and prescriptions
-        		infoFile = new File(patientDir, "info.txt");
-        		vitalsFile = new File(patientDir, "vitals.txt");
-        		insuranceFile = new File(patientDir, "insurance.txt");
-        		pharmacyFile = new File(patientDir, "pharmacy.txt");
+//        		infoFile = new File(patientDir, "info.txt");
+//        		contactFile = new File(patientDir, "contact.txt");
+//        		vitalsFile = new File(patientDir, "vitals.txt");
+//        		insuranceFile = new File(patientDir, "insurance.txt");
+//        		pharmacyFile = new File(patientDir, "pharmacy.txt");
         		
-        		if(infoFile.createNewFile()
+        		if(infoFile.createNewFile() 
+        				&& contactFile.createNewFile()
         				&& vitalsFile.createNewFile()
         				&& insuranceFile.createNewFile()
         				&& pharmacyFile.createNewFile()
@@ -59,7 +66,8 @@ public class Patient {
         				&& prescriptionDir.mkdir() 
         				&& messageDir.mkdir())
         		{
-        			saveInfo();
+        			System.out.println("yay");
+        			fileWrite(infoFile.getPath(), getName() + "\n" + getDOB() +" \n");
         			return true;
         		} else {
         			// clean up if dir creation fails
@@ -76,30 +84,42 @@ public class Patient {
         }
     }
     
-    private void buildDir() {
+    
+    private void buildFiles() {
+    	infoFile = new File(patientDir, "info.txt");
+		contactFile = new File(patientDir, "contact.txt");
+		vitalsFile = new File(patientDir, "vitals.txt");
+		insuranceFile = new File(patientDir, "insurance.txt");
+		pharmacyFile = new File(patientDir, "pharmacy.txt");
+    }
+    private void buildDirs() {
     	String patientDirPath = "Patients" + File.separator + this.firstName + "_" + this.lastName + "_" + this.dob;
     	patientDir = new File(patientDirPath);
     	visitDir = new File(patientDirPath + File.separator + "visits");
     	prescriptionDir = new File(patientDirPath + File.separator + "prescriptions");
     	messageDir = new File(patientDirPath + File.separator + "messages");
-//    	System.out.println(visitDir.getPath());
     }
     
+    public void editInfo(String contact, String insurance, String pharmacy) {
+    	fileWrite(contactFile.getPath(), contact);
+    	fileWrite(insuranceFile.getPath(), insurance);
+    	fileWrite(pharmacyFile.getPath(), pharmacy);
+    }
     
-    private void saveInfo() {
-        FileWriter writer = null;
+    private void fileWrite(String filepath, String content) {
+    	FileWriter writer = null;
         try {
-            writer = new FileWriter(infoFile);
-            writer.write("Name: " + getName() + "\n");
-            writer.write("Date of Birth: " + getDOB() + "\n");
+            writer = new FileWriter(new File(filepath));
+            writer.write(content + "\n");
+            System.out.println("Data Written in file: " + filepath);
         } catch (IOException e) {
-            System.out.println("SYSTEM ERROR (Patient->saveInfo)");
+            System.out.println("SYSTEM ERROR:Patient->fileWrite : " + filepath);
         } finally {
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    System.out.println("SYSTEM ERROR (Patient->saveInfo)");
+                    System.out.println("SYSTEM ERROR: Patient->saveWrite : " + filepath);
                 }
             }
         }
@@ -288,7 +308,6 @@ public class Patient {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
-        // Constructing the filename with the current date and time, replacing slashes with dashes
         String filename = formattedDateTime + ".txt";
         
         // Ensuring the message directory exists
@@ -296,35 +315,13 @@ public class Patient {
             messageDir.mkdirs();
         }
 
-        // Creating the file under messageDir with the constructed filename
         File messageFile = new File(messageDir, filename);
 
-        // Using try-with-resources to handle the FileWriter automatically
         try (FileWriter writer = new FileWriter(messageFile)) {
             writer.write(message);
         } catch (IOException e) {
             System.out.println("SYSTEM ERROR (Patient->saveMessage): " + e.getMessage());
         }
     }
-    
-    
-//    LocalDateTime time = LocalDateTime.now();
-//	String now = time.format(DateTimeFormatter.ofPattern("MM/dd/yyyy_HH-mm-ss"));
-//	File messageFile = new File(messageDir + File.separator + now + ".txt");
-//	FileWriter writer = null;
-//    try {
-//        writer = new FileWriter(messageFile);
-//        writer.write(message + "\n");
-//    } catch (IOException e) {
-//        System.out.println("SYSTEM ERROR (Patient->saveMessage1)");
-//    } finally {
-//        if (writer != null) {
-//            try {
-//                writer.close();
-//            } catch (IOException e) {
-//                System.out.println("SYSTEM ERROR (Patient->saveMessage)");
-//            }
-//        }
-//    }
 
 }
