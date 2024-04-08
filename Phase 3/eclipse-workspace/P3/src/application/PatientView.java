@@ -46,6 +46,8 @@ public class PatientView {
 	
 	private Scene createPortalScene() {
 		
+//		VBox hello = new VBox(10);
+		
 		GridPane dash = new GridPane();
 		dash.setAlignment(Pos.CENTER);
 		dash.setHgap(30);
@@ -58,9 +60,8 @@ public class PatientView {
 		dash.add(createViewMessageBox(), 0, 2);
 		dash.add(createSendMessageBox(), 1, 2);
 		
+		
 		return new Scene(dash, width, height);
-		
-		
 	}
 	
 	
