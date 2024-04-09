@@ -18,9 +18,6 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import javafx.collections.FXCollections;
 
 public class NurseView {
 	
@@ -31,10 +28,10 @@ public class NurseView {
     private Nurse nurse;
     private Text alert;
     
-    private ComboBox<String> weightDropdown;
-    private ComboBox<String> heightDropdown;
-    private ComboBox<String> temperatureDropdown;
-    private ComboBox<String> bloodPressureDropdown;
+    private TextField weightField;
+    private TextField heightField;
+    private TextField tempField;
+    private TextField BPField;
 
     private ListView<String> prescriptionListView;
     private ListView<String> healthHistoryListView;
@@ -126,58 +123,49 @@ public class NurseView {
     }
 
     
-    private HBox createDropdownMenus() {
-    	// Dropdown menu for Weight
-        ComboBox<String> weightDropdown = new ComboBox<>();
-        for (int i = 50; i <= 500; i=i+1) {
-            weightDropdown.getItems().add(i + " lbs");
-        }
-        weightDropdown.setPromptText("Weight (lbs)");
-
-        // Dropdown menu for Height with options from 110 to 210cm
-        ComboBox<String> heightDropdown = new ComboBox<>();
-        for (int i = 50; i <= 220; i=i+5) {
-            heightDropdown.getItems().add(i + " cm");
-        }
-        heightDropdown.setPromptText("Height (cms)");
-
-        // Dropdown menu for Temperature with options from 90 to 110F
-        ComboBox<String> temperatureDropdown = new ComboBox<>();
-        for (int i = 90; i <= 115; i++) {
-            temperatureDropdown.getItems().add(i + " F");
-        }
-        temperatureDropdown.setPromptText("Temperature (F)");
-
-        // Dropdown menu for Blood Pressure with 10 more options
-        ComboBox<String> bloodPressureDropdown = new ComboBox<>(FXCollections.observableArrayList(
-            "120/80", "130/85", "140/90", "150/95", "160/100", 
-            "170/105", "180/110", "190/115", "200/120", "210/125", "220/130"));
-        bloodPressureDropdown.setPromptText("Blood Pressure");
+    private HBox createVitalsBox() {
+    	
+        Label weightLabel = new Label("Weight (lbs):");
+        weightField = new TextField();
+        weightField.setPromptText("Weight (lbs)");
+        weightField.setPrefWidth(150);
+        VBox weightBox = new VBox(5, weightLabel, weightField);
         
+        Label heightLabel = new Label("Height (cms):");
+        heightField = new TextField();
+        heightField.setPromptText("Height (cms)");
+        heightField.setPrefWidth(150);
+        VBox heightBox = new VBox(5, heightLabel, heightField);
         
-//
-//        // Dropdown menu for Age with options from 12 to 80
-//        ComboBox<String> ageDropdown = new ComboBox<>();
-//        for (int i = 12; i <= 80; i++) {
-//            ageDropdown.getItems().add(Integer.toString(i));
-//        }
-//        ageDropdown.setPromptText("Age");
-
-
-        // Set preferred width for dropdowns
-        weightDropdown.setPrefWidth(200);
-        heightDropdown.setPrefWidth(200);
-        temperatureDropdown.setPrefWidth(200);
-        bloodPressureDropdown.setPrefWidth(200);
-//        ageDropdown.setPrefWidth(200);
-
-        // Horizontal box for dropdown menus
-        HBox dropdownMenus = new HBox(20);
-        dropdownMenus.getChildren().addAll(weightDropdown, heightDropdown, temperatureDropdown, bloodPressureDropdown /*, ageDropdown*/);
-        dropdownMenus.setAlignment(Pos.CENTER); 
+        Label temperatureLabel = new Label("Temperature (F):");
+        tempField = new TextField();
+        tempField.setPromptText("Temperature (F)");
+        tempField.setPrefWidth(150);
+        VBox temperatureBox = new VBox(5, temperatureLabel, tempField);
         
-        return dropdownMenus;
+        Label bloodPressureLabel = new Label("Blood Pressure:");
+        BPField = new TextField();
+        BPField.setPromptText("e.g., 120/80");
+        BPField.setPrefWidth(150);
+        VBox bloodPressureBox = new VBox(5, bloodPressureLabel, BPField);
+
+        // Save Button
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(e -> {
+            nurse.setPatientVitals(weightField.getText(), heightField.getText(), tempField.getText(), BPField.getText());
+            alert.setText("vitals saved");
+            alert.setFill(Color.GREEN);
+        });
+
+        HBox vitalsBox = new HBox(10);
+        vitalsBox.getChildren().addAll(weightBox, heightBox, temperatureBox, bloodPressureBox, saveButton);
+        vitalsBox.setAlignment(Pos.CENTER);
+
+        return vitalsBox;
     }
+
+
+
 
     private GridPane createDataGrid() {
     	Label prescriptionLabel = new Label("Prescriptions");
@@ -196,7 +184,13 @@ public class NurseView {
 		healthRecordArea = new TextArea();
 		healthRecordArea.setPrefSize(300, 200);
 		healthRecordArea.setPromptText("Allergies, Immunization, Health issues/concerns");
-		Button saveButton = new Button("Send");
+		Button saveButton = new Button("Save");
+		saveButton.setOnAction(e -> {
+        	nurse.saveHealthRecord(healthRecordArea.getText());
+        	alert.setText("Record saved");
+        	alert.setFill(Color.GREEN);
+        });
+		
 		VBox healthRecordBox = new VBox(healthRecordLabel, healthRecordArea, saveButton);
 		
 		
@@ -211,6 +205,17 @@ public class NurseView {
 		messageArea.setPrefSize(300, 200);
 		messageArea.setPromptText("Enter your message here");
 		Button sendButton = new Button("Send");
+		sendButton.setOnAction(e -> {
+			if(!messageArea.getText().isEmpty()) {
+				nurse.saveMessage(messageArea.getText());	
+				alert.setText("Message sent");
+				alert.setFill(Color.GREEN);
+			}
+			else {
+				alert.setText("Message cannot be empty");
+				alert.setFill(Color.RED);
+			}
+        });
 		VBox sendMessageBox = new VBox(sendMessageLabel, messageArea, sendButton);
 		
 
@@ -228,24 +233,15 @@ public class NurseView {
     }
     
     
-    private HBox createFooter() {
-    	
-        Button save = new Button("Save");
-        save.setOnAction(e -> {
-        	int weight = Integer.parseInt(weightDropdown.getValue().replaceAll("\\D+", ""));
-            int height = Integer.parseInt(heightDropdown.getValue().replaceAll("\\D+", ""));
-            int temp = Integer.parseInt(temperatureDropdown.getValue().replaceAll("\\D+", ""));
-            String BP = bloodPressureDropdown.getValue();
-
-            nurse.setPatientVitals(weight, height, temp, BP);
-        });
-
-        HBox footer = new HBox(10); // 10 is spacing between buttons
-        footer.getChildren().addAll(save);
-        footer.setAlignment(Pos.CENTER);
+//    private HBox createFooter() {
+//    	
         
-        return footer;
-    }
+//        HBox footer = new HBox(10); // 10 is spacing between buttons
+//        footer.getChildren().addAll(save);
+//        footer.setAlignment(Pos.CENTER);
+//        
+//        return footer;
+//    }
     
     
     private HBox createHeader() {
@@ -276,16 +272,16 @@ public class NurseView {
         VBox layout = new VBox(20);
         layout.setPadding(new Insets(30, 30, 30, 30));
         layout.setAlignment(Pos.CENTER);
-        layout.getChildren().addAll(createHeader(), createFinderBox(), alert, createDropdownMenus(), createDataGrid(), createFooter());
+        layout.getChildren().addAll(createHeader(), createFinderBox(), alert, createVitalsBox(), createDataGrid());
 
         return new Scene(layout, width, height);
     }
     
     private void populateData() {
     	
-        ListView<String> messagesListView = nurse.getPatientMessageList();
-        ListView<String> healthHistoriesListView = nurse.getPatientHealthHistoryList();
-        ListView<String> prescriptionsListView = nurse.getPatientPrescriptionList();
+        ListView<String> messagesListView = nurse.getMessageList();
+        ListView<String> healthHistoriesListView = nurse.getHealthHistoryList();
+        ListView<String> prescriptionsListView = nurse.getPrescriptionList();
 
         messageListView.setItems(messagesListView.getItems());
         healthHistoryListView.setItems(healthHistoriesListView.getItems());

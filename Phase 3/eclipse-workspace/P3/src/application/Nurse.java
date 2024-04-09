@@ -21,20 +21,28 @@ public class Nurse {
 //		return patient.getVisitList();
 //	}
 	
-	public ListView<String> getPatientPrescriptionList() {
+	public ListView<String> getPrescriptionList() {
 		return patient.getPrescriptionList();
 	}
 	
-	public ListView<String> getPatientMessageList() {
+	public ListView<String> getMessageList() {
 		return patient.getMessageList();
 	}
 	
-	public ListView<String> getPatientHealthHistoryList() {
+	public ListView<String> getHealthHistoryList() {
 		return patient.getHealthHistoryList();
 	}
 	
-	public void setPatientVitals(int weight, int height, int temp, String BP) {
+	public void setPatientVitals(String weight, String height,String temp, String BP) {
 		patient.setVitals(weight, height, temp, BP);
+	}
+	
+	public void saveHealthRecord(String record) {
+		patient.saveHealthRecord(record);
+	}
+	
+	public void saveMessage(String message) {
+		patient.saveMessage("Nurse", message);
 	}
 }
 

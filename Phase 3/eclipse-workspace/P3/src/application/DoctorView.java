@@ -37,8 +37,13 @@ public class DoctorView {
     private ListView<String> prescriptionListView;
     private ListView<String> healthHistoryListView;
     private ListView<String> messageListView;
-    private TextArea healthRecordArea;
+    private TextArea newPrescriptionArea;
     private TextArea messageArea;
+    private TextArea summaryArea;
+    
+    private TextArea contactArea;
+    private TextArea insuranceArea;
+    private TextArea pharmacyArea;
 
     public DoctorView(Stage stage, Controller control, int width, int height) {
         this.stage = stage;
@@ -124,7 +129,7 @@ public class DoctorView {
     }
 
     
-    private HBox createPatientInfoBox() {
+    private HBox createPatientVitalsBox() {
     	
 	    weight = new Text("Weight(lbs): ");
 	    weight.setFont(Font.font("Verdana", 16));
@@ -143,14 +148,37 @@ public class DoctorView {
 
 
 	    // Arrange info horizontally
-	    HBox patientInfo = new HBox(10); // 10 is spacing between elements
-	    patientInfo.setAlignment(Pos.CENTER); // Center alignment for HBox
-	    patientInfo.getChildren().addAll(weight, patientHeight, temp, BP, age);
+	    HBox vitalsBox = new HBox(10); // 10 is spacing between elements
+	    vitalsBox.setAlignment(Pos.CENTER); // Center alignment for HBox
+	    vitalsBox.getChildren().addAll(weight, patientHeight, temp, BP, age);
         
-	    return patientInfo;
+	    return vitalsBox;
     }
     
-    
+	private VBox createInfoBox() {
+		
+		Label contactLabel = new Label("Contact");
+		
+		contactArea = new TextArea();
+		contactArea.setPrefSize(300, 66);
+		contactArea.setPromptText("Contact information");
+		
+		Label insuranceLabel = new Label("Insurance");
+		
+		insuranceArea = new TextArea();
+		insuranceArea.setPrefSize(300, 66);
+		insuranceArea.setPromptText("Insurance ID/information");
+		
+		Label pharmacyLabel = new Label("Pharmacy");
+		
+		pharmacyArea = new TextArea();
+		pharmacyArea.setPrefSize(300, 66);
+	    pharmacyArea.setPromptText("Pharmacy");
+		
+		VBox infoBox = new VBox(contactLabel, contactArea, insuranceLabel, insuranceArea, pharmacyLabel, pharmacyArea);
+
+		return infoBox;
+	}
 
     private GridPane createDataGrid() {
     	Label prescriptionLabel = new Label("Prescriptions");
@@ -165,12 +193,25 @@ public class DoctorView {
 		VBox healthHistoryBox =  new VBox(healthHistoryLabel, healthHistoryListView);   
 		
 		
-		Label healthRecordLabel = new Label("New Health Record");
-		healthRecordArea = new TextArea();
-		healthRecordArea.setPrefSize(300, 200);
-		healthRecordArea.setPromptText("Allergies, Immunization, Health issues/concerns");
-		Button saveButton = new Button("Send");
-		VBox healthRecordBox = new VBox(healthRecordLabel, healthRecordArea, saveButton);
+		Label newPrescriptionLabel = new Label("New Prescription");
+		newPrescriptionArea = new TextArea();
+		newPrescriptionArea.setPrefSize(300, 200);
+		newPrescriptionArea.setPromptText("Prescribe Medications here");
+		Button saveButton = new Button("Save");
+		saveButton.setOnAction(e -> {
+        	doctor.savePrescription(newPrescriptionArea.getText());
+        	if(!newPrescriptionArea.getText().isEmpty()) {
+				doctor.saveMessage(newPrescriptionArea.getText());	
+				alert.setText("Prescription saved");
+				alert.setFill(Color.GREEN);
+			}
+			else {
+				alert.setText("Prescriptions cannot be empty");
+				alert.setFill(Color.RED);
+			}
+        });
+		
+		VBox healthRecordBox = new VBox(newPrescriptionLabel, newPrescriptionArea, saveButton);
 		
 		
 		Label viewMessagesLabel = new Label("Messages");
@@ -184,7 +225,37 @@ public class DoctorView {
 		messageArea.setPrefSize(300, 200);
 		messageArea.setPromptText("Enter your message here");
 		Button sendButton = new Button("Send");
+		sendButton.setOnAction(e -> {
+			if(!messageArea.getText().isEmpty()) {
+				doctor.saveMessage(messageArea.getText());	
+				alert.setText("Message sent");
+				alert.setFill(Color.GREEN);
+			}
+			else {
+				alert.setText("Message cannot be empty");
+				alert.setFill(Color.RED);
+			}
+        });
 		VBox sendMessageBox = new VBox(sendMessageLabel, messageArea, sendButton);
+		
+		
+		Label summaryLabel = new Label("Visit summary");
+		summaryArea = new TextArea();
+		summaryArea.setPrefSize(300, 200);
+		summaryArea.setPromptText("Enter a summary of the medical examination");
+		Button saveButton2 = new Button("Send");
+		saveButton2.setOnAction(e -> {
+        	if(!messageArea.getText().isEmpty()) {
+        		doctor.saveVisit(summaryArea.getText());
+				alert.setText("Visit summary saved");
+				alert.setFill(Color.GREEN);
+			}
+			else {
+				alert.setText("Visit summary cannot be empty");
+				alert.setFill(Color.RED);
+			}
+        });
+		VBox summaryBox = new VBox(summaryLabel, summaryArea, saveButton2);
 		
 
         GridPane dataGrid = new GridPane();
@@ -193,28 +264,13 @@ public class DoctorView {
         dataGrid.add(prescriptionBox, 0, 0);
         dataGrid.add(healthHistoryBox, 1, 0);
         dataGrid.add(healthRecordBox, 0, 1);
-        dataGrid.add(sendMessageBox, 1, 1);
-        dataGrid.add(viewMessageBox, 0, 2, 2, 1);
+        dataGrid.add(summaryBox, 1, 1);
+        dataGrid.add(sendMessageBox, 0, 2);
+        dataGrid.add(viewMessageBox, 1, 2);
+        dataGrid.add(createInfoBox(), 3, 0);
         dataGrid.setAlignment(Pos.CENTER);
         
         return dataGrid;
-    }
-    
-    
-    private HBox createFooter() {
-
-        // Create a new Save button
-        Button save = new Button("Save");
-        save.setOnAction(e -> {
-            // Add action logic for the Save button
-        });
-
-        // Horizontal box for Back and Save buttons
-        HBox footer = new HBox(10); // 10 is spacing between buttons
-        footer.getChildren().addAll(save);
-        footer.setAlignment(Pos.CENTER);
-        
-        return footer;
     }
     
     
@@ -246,7 +302,7 @@ public class DoctorView {
         VBox layout = new VBox(20);
         layout.setPadding(new Insets(30, 30, 30, 30));
         layout.setAlignment(Pos.CENTER);
-        layout.getChildren().addAll(createHeader(), createFinderBox(), alert, createPatientInfoBox(), createDataGrid(), createFooter());
+        layout.getChildren().addAll(createHeader(), createFinderBox(), alert, createPatientVitalsBox(), createDataGrid());
 
         return new Scene(layout, width, height);
     }
@@ -257,9 +313,18 @@ public class DoctorView {
     	temp.setText("Temperature(F): " + doctor.getPatientTemp());
     	BP.setText("Blood Pressure: " + doctor.getPatientBP());
     	age.setText("Age: " + doctor.getPatientAge());
-    	messageListView = doctor.getMessageList();
-    	healthHistoryListView = doctor.getHealthHistoryList();
-    	prescriptionListView = doctor.getPrescriptionList();
+    	
+    	ListView<String> messagesListView = doctor.getMessageList();
+        ListView<String> healthHistoriesListView = doctor.getHealthHistoryList();
+        ListView<String> prescriptionsListView = doctor.getPrescriptionList();
+
+        messageListView.setItems(messagesListView.getItems());
+        healthHistoryListView.setItems(healthHistoriesListView.getItems());
+        prescriptionListView.setItems(prescriptionsListView.getItems());
+
+		contactArea.setText(doctor.getContactInfo());
+		insuranceArea.setText(doctor.getInsuranceInfo());
+		pharmacyArea.setText(doctor.getPharmacyInfo());
     }
 
     private void logout() {

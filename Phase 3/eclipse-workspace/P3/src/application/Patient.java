@@ -20,10 +20,10 @@ public class Patient {
     private String firstName;
     private String lastName;
     private LocalDate dob;
-    private int weight;
-    private int height;
-    private int temp;
-    private int age;
+    private String weight;
+    private String height;
+    private String temp;
+    private String age;
     private String BP;
     
     private File infoFile;
@@ -42,7 +42,7 @@ public class Patient {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-        this.age = Period.between(dob, LocalDate.now()).getYears();
+        this.age = Integer.toString(Period.between(dob, LocalDate.now()).getYears());
 		buildDirs();
 		buildFiles();		
     }
@@ -110,19 +110,19 @@ public class Patient {
     }
     
     public String getAge() {
-    	return Integer.toString(age);
+    	return age;
     }
     
     public String getWeight() {
-    	return Integer.toString(weight);
+    	return weight;
     }
     
     public String getHeight() {
-    	return Integer.toString(weight);
+    	return height;
     }
     
     public String getTemp() {
-    	return Integer.toString(temp);
+    	return temp;
     }
     
     public String getBP() {
@@ -230,7 +230,7 @@ public class Patient {
     	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
     }
     
-    public void setVitals(int weight, int height, int temp, String BP) {
+    public void setVitals(String weight, String height, String temp, String BP) {
     	this.weight = weight;
     	this.height = height;
     	this.temp = temp;
@@ -244,18 +244,43 @@ public class Patient {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
-        String filename = sender + formattedDateTime + ".txt";
-
-//        File messageFile = new File(messageDir, filename);
+        String filename = sender + " " + formattedDateTime + ".txt";
+        
         fileWrite(filename, messageDir, message);
-//
-//        try (FileWriter writer = new FileWriter(messageFile)) {
-//            writer.write(message);
-//        } catch (IOException e) {
-//            System.out.println("SYSTEM ERROR (Patient->saveMessage): " + e.getMessage());
-//        }
     }
+    
+    public void saveHealthRecord(String record) {
+    	LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
+        String formattedDateTime = now.format(formatter);
+        
+        String filename = "record " + formattedDateTime + ".txt";
 
+        fileWrite(filename, healthHistoryDir, record);
+	}
+
+    
+    public void savePrescription(String prescription) {
+    	LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
+        String formattedDateTime = now.format(formatter);
+        
+        String filename = "prescription " + formattedDateTime + ".txt";
+
+        fileWrite(filename, prescriptionDir, prescription);
+    }
+    
+    public void saveVisit(String summary) {
+    	LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
+        String formattedDateTime = now.format(formatter);
+        
+        String filename = "visit " + formattedDateTime + ".txt";
+
+        fileWrite(filename, visitDir, summary);
+    }
+    
+    
     
     // function to read file data
     private String fileRead(String filename, File dir) {

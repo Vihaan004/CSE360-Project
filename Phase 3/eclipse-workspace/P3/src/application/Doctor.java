@@ -21,6 +21,18 @@ public class Doctor {
 //		return patient.getVisitList();
 //	}
 	
+	public String getContactInfo() {
+		return patient.getContactInfo();
+	}
+	
+	public String getPharmacyInfo() {
+		return patient.getPharmacyInfo();
+	}
+	
+	public String getInsuranceInfo() {
+		return patient.getInsuranceInfo();
+	}
+	
 	public ListView<String> getPrescriptionList() {
 		return patient.getPrescriptionList();
 	}
@@ -31,6 +43,18 @@ public class Doctor {
 	
 	public ListView<String> getHealthHistoryList() {
 		return patient.getHealthHistoryList();
+	}
+	
+	public void saveMessage(String message) {
+		patient.saveMessage("Doctor", message);
+	}
+	
+	public void saveVisit(String summary) {
+		patient.saveVisit(summary);
+	}
+	
+	public void savePrescription(String prescription) {
+		patient.savePrescription(prescription);
 	}
 	
 	public String getPatientWeight() {
