@@ -20,11 +20,7 @@ public class Patient {
     private String firstName;
     private String lastName;
     private LocalDate dob;
-    private String weight;
-    private String height;
-    private String temp;
     private String age;
-    private String BP;
     
     private File infoFile;
     private File contactFile;
@@ -102,7 +98,7 @@ public class Patient {
    
     // get functions
     public String getName() {
-    	return firstName + " " + lastName + " ";
+    	return firstName + " " + lastName;
     }
     
     public String getDOB() {
@@ -114,20 +110,25 @@ public class Patient {
     }
     
     public String getWeight() {
-    	return weight;
+        String[] lines = fileRead("vitals.txt", patientDir).split("\n");
+        return lines.length > 0 ? lines[0] : "N/A";
     }
-    
+
     public String getHeight() {
-    	return height;
+        String[] lines = fileRead("vitals.txt", patientDir).split("\n");
+        return lines.length > 1 ? lines[1] : "N/A";
     }
-    
+
     public String getTemp() {
-    	return temp;
+        String[] lines = fileRead("vitals.txt", patientDir).split("\n");
+        return lines.length > 2 ? lines[2] : "N/A";
     }
-    
+
     public String getBP() {
-    	return BP;
+        String[] lines = fileRead("vitals.txt", patientDir).split("\n");
+        return lines.length > 3 ? lines[3] : "N/A";
     }
+
     
     
     
@@ -223,6 +224,20 @@ public class Patient {
 	}
     
     
+
+    public Scene createRecordScene(String selectedRecord) {
+    	
+    	String content = fileRead(selectedRecord, healthHistoryDir);
+    	
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+        layout.getChildren().add(new Text(content));
+
+        return new Scene(layout, 500, 500);
+	}
+    
+    
+    
     // edit database
     public void editInfo(String contact, String insurance, String pharmacy) {
     	fileWrite(contactFile.getName(), patientDir, contact);
@@ -231,12 +246,8 @@ public class Patient {
     }
     
     public void setVitals(String weight, String height, String temp, String BP) {
-    	this.weight = weight;
-    	this.height = height;
-    	this.temp = temp;
-    	this.BP = BP;
-    	String content = getWeight() + getHeight() + getTemp() + getBP() + getAge();
-    	fileWrite("vitals", patientDir, content);
+    	String content = weight +"\n"+ height +"\n"+ temp +"\n"+ BP +"\n"+ getAge()+"\n";
+    	fileWrite("vitals.txt", patientDir, content);
     }
     
     public void saveMessage(String sender, String message) {
@@ -254,7 +265,7 @@ public class Patient {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
-        String filename = "record " + formattedDateTime + ".txt";
+        String filename = "Record " + formattedDateTime + ".txt";
 
         fileWrite(filename, healthHistoryDir, record);
 	}
@@ -265,7 +276,7 @@ public class Patient {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
-        String filename = "prescription " + formattedDateTime + ".txt";
+        String filename = "Prescription " + formattedDateTime + ".txt";
 
         fileWrite(filename, prescriptionDir, prescription);
     }
@@ -275,7 +286,7 @@ public class Patient {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
-        String filename = "visit " + formattedDateTime + ".txt";
+        String filename = "Visit " + formattedDateTime + ".txt";
 
         fileWrite(filename, visitDir, summary);
     }

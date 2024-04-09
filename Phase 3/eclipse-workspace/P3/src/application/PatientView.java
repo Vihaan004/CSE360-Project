@@ -182,7 +182,7 @@ public class PatientView {
 		    if (e.getClickCount() == 2 && !healthHistoryList.getItems().get(0).equals("You have no health history")) { // Double-click and ensure it's not the placeholder text
 		        String selectedHistory = healthHistoryList.getSelectionModel().getSelectedItem();
 		        System.out.println(selectedHistory + " opened");
-		        control.popup(stage, patient.createVisitScene(selectedHistory), "Record");
+		        control.popup(stage, patient.createRecordScene(selectedHistory), "Record");
 		    }
 		});
 		

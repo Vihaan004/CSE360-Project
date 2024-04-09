@@ -2,6 +2,7 @@ package application;
 
 import java.time.LocalDate;
 
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 
 public class Nurse {
@@ -43,6 +44,18 @@ public class Nurse {
 	
 	public void saveMessage(String message) {
 		patient.saveMessage("Nurse", message);
+	}
+
+	public Scene getMessage(String selectedMessage) {
+		return patient.createMessageScene(selectedMessage);
+	}
+
+	public Scene getRecord(String selectedRecord) {
+		return patient.createRecordScene(selectedRecord);
+	}
+
+	public Scene getPrescription(String selectedPrescription) {
+		return patient.createPrescriptionScene(selectedPrescription);
 	}
 }
 

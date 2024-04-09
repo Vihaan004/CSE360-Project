@@ -33,9 +33,9 @@ public class NurseView {
     private TextField tempField;
     private TextField BPField;
 
-    private ListView<String> prescriptionListView;
-    private ListView<String> healthHistoryListView;
-    private ListView<String> messageListView;
+    private ListView<String> prescriptionList;
+    private ListView<String> healthHistoryList;
+    private ListView<String> messageList;
     private TextArea healthRecordArea;
     private TextArea messageArea;
 
@@ -125,35 +125,40 @@ public class NurseView {
     
     private HBox createVitalsBox() {
     	
-        Label weightLabel = new Label("Weight (lbs):");
-        weightField = new TextField();
-        weightField.setPromptText("Weight (lbs)");
-        weightField.setPrefWidth(150);
-        VBox weightBox = new VBox(5, weightLabel, weightField);
-        
-        Label heightLabel = new Label("Height (cms):");
-        heightField = new TextField();
-        heightField.setPromptText("Height (cms)");
-        heightField.setPrefWidth(150);
-        VBox heightBox = new VBox(5, heightLabel, heightField);
-        
-        Label temperatureLabel = new Label("Temperature (F):");
-        tempField = new TextField();
-        tempField.setPromptText("Temperature (F)");
-        tempField.setPrefWidth(150);
-        VBox temperatureBox = new VBox(5, temperatureLabel, tempField);
-        
-        Label bloodPressureLabel = new Label("Blood Pressure:");
-        BPField = new TextField();
-        BPField.setPromptText("e.g., 120/80");
-        BPField.setPrefWidth(150);
-        VBox bloodPressureBox = new VBox(5, bloodPressureLabel, BPField);
+    	Label weightLabel = new Label("Weight (lbs):");
+    	weightField = new TextField();
+    	weightField.setPromptText("Weight (lbs)");
+    	weightField.setPrefWidth(150);
+    	weightField.setEditable(false);
+    	VBox weightBox = new VBox(5, weightLabel, weightField);
+
+    	Label heightLabel = new Label("Height (cms):");
+    	heightField = new TextField();
+    	heightField.setPromptText("Height (cms)");
+    	heightField.setPrefWidth(150);
+    	heightField.setEditable(false);
+    	VBox heightBox = new VBox(5, heightLabel, heightField);
+
+    	Label temperatureLabel = new Label("Temperature (F):");
+    	tempField = new TextField();
+    	tempField.setPromptText("Temperature (F)");
+    	tempField.setPrefWidth(150);
+    	tempField.setEditable(false);
+    	VBox temperatureBox = new VBox(5, temperatureLabel, tempField);
+
+    	Label bloodPressureLabel = new Label("Blood Pressure:");
+    	BPField = new TextField();
+    	BPField.setPromptText("e.g., 120/80");
+    	BPField.setPrefWidth(150);
+    	BPField.setEditable(false);
+    	VBox bloodPressureBox = new VBox(5, bloodPressureLabel, BPField);
+
 
         // Save Button
         Button saveButton = new Button("Save");
         saveButton.setOnAction(e -> {
             nurse.setPatientVitals(weightField.getText(), heightField.getText(), tempField.getText(), BPField.getText());
-            alert.setText("vitals saved");
+            alert.setText("Vitals saved");
             alert.setFill(Color.GREEN);
         });
 
@@ -169,21 +174,23 @@ public class NurseView {
 
     private GridPane createDataGrid() {
     	Label prescriptionLabel = new Label("Prescriptions");
-        prescriptionListView = new ListView<>();
-        prescriptionListView.setPrefSize(300, 200);
-		VBox prescriptionBox =  new VBox(prescriptionLabel, prescriptionListView);        
+        prescriptionList = new ListView<>();
+        prescriptionList.setPrefSize(300, 200);
+		VBox prescriptionBox =  new VBox(prescriptionLabel, prescriptionList);        
 		
 		
 		Label healthHistoryLabel = new Label("Health History");
-        healthHistoryListView = new ListView<>();
-        healthHistoryListView.setPrefSize(300, 200);
-		VBox healthHistoryBox =  new VBox(healthHistoryLabel, healthHistoryListView);   
+        healthHistoryList = new ListView<>();
+        healthHistoryList.setPrefSize(300, 200);
+		VBox healthHistoryBox =  new VBox(healthHistoryLabel, healthHistoryList);   
 		
 		
 		Label healthRecordLabel = new Label("New Health Record");
 		healthRecordArea = new TextArea();
 		healthRecordArea.setPrefSize(300, 200);
 		healthRecordArea.setPromptText("Allergies, Immunization, Health issues/concerns");
+		healthRecordArea.setEditable(false);
+
 		Button saveButton = new Button("Save");
 		saveButton.setOnAction(e -> {
         	nurse.saveHealthRecord(healthRecordArea.getText());
@@ -195,15 +202,16 @@ public class NurseView {
 		
 		
 		Label viewMessagesLabel = new Label("Messages");
-        messageListView = new ListView<>();
-        messageListView.setPrefSize(300, 200);
-		VBox viewMessageBox =  new VBox(viewMessagesLabel, messageListView); 
+        messageList = new ListView<>();
+        messageList.setPrefSize(300, 200);
+		VBox viewMessageBox =  new VBox(viewMessagesLabel, messageList); 
 		
 		
 		Label sendMessageLabel = new Label("Send a message");
 		messageArea = new TextArea();
 		messageArea.setPrefSize(300, 200);
 		messageArea.setPromptText("Enter your message here");
+		messageArea.setEditable(false);
 		Button sendButton = new Button("Send");
 		sendButton.setOnAction(e -> {
 			if(!messageArea.getText().isEmpty()) {
@@ -231,17 +239,6 @@ public class NurseView {
         
         return dataGrid;
     }
-    
-    
-//    private HBox createFooter() {
-//    	
-        
-//        HBox footer = new HBox(10); // 10 is spacing between buttons
-//        footer.getChildren().addAll(save);
-//        footer.setAlignment(Pos.CENTER);
-//        
-//        return footer;
-//    }
     
     
     private HBox createHeader() {
@@ -279,13 +276,44 @@ public class NurseView {
     
     private void populateData() {
     	
+    	weightField.setEditable(true);
+    	heightField.setEditable(true);
+    	tempField.setEditable(true);
+    	BPField.setEditable(true);
+    	healthRecordArea.setEditable(true);
+    	messageArea.setEditable(true);
+    	
         ListView<String> messagesListView = nurse.getMessageList();
         ListView<String> healthHistoriesListView = nurse.getHealthHistoryList();
         ListView<String> prescriptionsListView = nurse.getPrescriptionList();
 
-        messageListView.setItems(messagesListView.getItems());
-        healthHistoryListView.setItems(healthHistoriesListView.getItems());
-        prescriptionListView.setItems(prescriptionsListView.getItems());
+        messageList.setItems(messagesListView.getItems());
+        healthHistoryList.setItems(healthHistoriesListView.getItems());
+        prescriptionList.setItems(prescriptionsListView.getItems());
+        
+        messageList.setOnMouseClicked(e -> {
+		    if (e.getClickCount() == 2 && !messageList.getItems().get(0).equals("You have no messages")) {
+		        String selectedMessage = messageList.getSelectionModel().getSelectedItem();
+		        System.out.println(selectedMessage + " opened");
+		        control.popup(stage, nurse.getMessage(selectedMessage), "Message");
+		    }
+		});
+        
+        healthHistoryList.setOnMouseClicked(e -> {
+		    if (e.getClickCount() == 2 && !healthHistoryList.getItems().get(0).equals("You have no health history")) {
+		        String selectedRecord = healthHistoryList.getSelectionModel().getSelectedItem();
+		        System.out.println(selectedRecord + " opened");
+		        control.popup(stage, nurse.getRecord(selectedRecord), "Record");
+		    }
+		});
+        
+        prescriptionList.setOnMouseClicked(e -> {
+		    if (e.getClickCount() == 2 && !prescriptionList.getItems().get(0).equals("You have no prescriptions")) { 
+		        String selectedPrescription = prescriptionList.getSelectionModel().getSelectedItem();
+		        System.out.println(selectedPrescription + " opened");
+		        control.popup(stage, nurse.getPrescription(selectedPrescription), "Prescription");
+		    }
+		});
     }
 
 

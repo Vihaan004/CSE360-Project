@@ -2,6 +2,7 @@ package application;
 
 import java.time.LocalDate;
 
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 
 public class Doctor {
@@ -55,6 +56,20 @@ public class Doctor {
 	
 	public void savePrescription(String prescription) {
 		patient.savePrescription(prescription);
+	}
+	
+
+	public Scene getMessage(String selectedMessage) {
+		return patient.createMessageScene(selectedMessage);
+	}
+
+	public Scene getRecord(String selectedRecord) {
+		return patient.createRecordScene(selectedRecord);
+	}
+	
+
+	public Scene getPrescription(String selectedPrescription) {
+		return patient.createPrescriptionScene(selectedPrescription);
 	}
 	
 	public String getPatientWeight() {

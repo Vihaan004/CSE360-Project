@@ -34,9 +34,9 @@ public class DoctorView {
     private Text BP;
     private Text age;
     
-    private ListView<String> prescriptionListView;
-    private ListView<String> healthHistoryListView;
-    private ListView<String> messageListView;
+    private ListView<String> prescriptionList;
+    private ListView<String> healthHistoryList;
+    private ListView<String> messageList;
     private TextArea newPrescriptionArea;
     private TextArea messageArea;
     private TextArea summaryArea;
@@ -162,18 +162,21 @@ public class DoctorView {
 		contactArea = new TextArea();
 		contactArea.setPrefSize(300, 66);
 		contactArea.setPromptText("Contact information");
+		contactArea.setEditable(false);
 		
 		Label insuranceLabel = new Label("Insurance");
 		
 		insuranceArea = new TextArea();
 		insuranceArea.setPrefSize(300, 66);
 		insuranceArea.setPromptText("Insurance ID/information");
+		insuranceArea.setEditable(false);
 		
 		Label pharmacyLabel = new Label("Pharmacy");
 		
 		pharmacyArea = new TextArea();
 		pharmacyArea.setPrefSize(300, 66);
 	    pharmacyArea.setPromptText("Pharmacy");
+	    pharmacyArea.setEditable(false);
 		
 		VBox infoBox = new VBox(contactLabel, contactArea, insuranceLabel, insuranceArea, pharmacyLabel, pharmacyArea);
 
@@ -182,26 +185,27 @@ public class DoctorView {
 
     private GridPane createDataGrid() {
     	Label prescriptionLabel = new Label("Prescriptions");
-        prescriptionListView = new ListView<>();
-        prescriptionListView.setPrefSize(300, 200);
-		VBox prescriptionBox =  new VBox(prescriptionLabel, prescriptionListView);        
+        prescriptionList = new ListView<>();
+        prescriptionList.setPrefSize(300, 200);
+		VBox prescriptionBox =  new VBox(prescriptionLabel, prescriptionList);        
 		
 		
 		Label healthHistoryLabel = new Label("Health History");
-        healthHistoryListView = new ListView<>();
-        healthHistoryListView.setPrefSize(300, 200);
-		VBox healthHistoryBox =  new VBox(healthHistoryLabel, healthHistoryListView);   
+        healthHistoryList = new ListView<>();
+        healthHistoryList.setPrefSize(300, 200);
+        
+		VBox healthHistoryBox =  new VBox(healthHistoryLabel, healthHistoryList);   
 		
 		
 		Label newPrescriptionLabel = new Label("New Prescription");
 		newPrescriptionArea = new TextArea();
 		newPrescriptionArea.setPrefSize(300, 200);
 		newPrescriptionArea.setPromptText("Prescribe Medications here");
+		newPrescriptionArea.setEditable(false);
 		Button saveButton = new Button("Save");
 		saveButton.setOnAction(e -> {
-        	doctor.savePrescription(newPrescriptionArea.getText());
         	if(!newPrescriptionArea.getText().isEmpty()) {
-				doctor.saveMessage(newPrescriptionArea.getText());	
+        		doctor.savePrescription(newPrescriptionArea.getText());	
 				alert.setText("Prescription saved");
 				alert.setFill(Color.GREEN);
 			}
@@ -215,15 +219,16 @@ public class DoctorView {
 		
 		
 		Label viewMessagesLabel = new Label("Messages");
-        messageListView = new ListView<>();
-        messageListView.setPrefSize(300, 200);
-		VBox viewMessageBox =  new VBox(viewMessagesLabel, messageListView); 
+        messageList = new ListView<>();
+        messageList.setPrefSize(300, 200);
+		VBox viewMessageBox =  new VBox(viewMessagesLabel, messageList); 
 		
 		
 		Label sendMessageLabel = new Label("Send a message");
 		messageArea = new TextArea();
 		messageArea.setPrefSize(300, 200);
 		messageArea.setPromptText("Enter your message here");
+		messageArea.setEditable(false);
 		Button sendButton = new Button("Send");
 		sendButton.setOnAction(e -> {
 			if(!messageArea.getText().isEmpty()) {
@@ -243,9 +248,10 @@ public class DoctorView {
 		summaryArea = new TextArea();
 		summaryArea.setPrefSize(300, 200);
 		summaryArea.setPromptText("Enter a summary of the medical examination");
-		Button saveButton2 = new Button("Send");
+    	summaryArea.setEditable(false);
+		Button saveButton2 = new Button("Save");
 		saveButton2.setOnAction(e -> {
-        	if(!messageArea.getText().isEmpty()) {
+        	if(!summaryArea.getText().isEmpty()) {
         		doctor.saveVisit(summaryArea.getText());
 				alert.setText("Visit summary saved");
 				alert.setFill(Color.GREEN);
@@ -314,17 +320,46 @@ public class DoctorView {
     	BP.setText("Blood Pressure: " + doctor.getPatientBP());
     	age.setText("Age: " + doctor.getPatientAge());
     	
+    	newPrescriptionArea.setEditable(true);
+    	messageArea.setEditable(true);
+    	summaryArea.setEditable(true);
+    	
+    	contactArea.setText(doctor.getContactInfo());
+    	insuranceArea.setText(doctor.getInsuranceInfo());
+    	pharmacyArea.setText(doctor.getPharmacyInfo());
+    	
     	ListView<String> messagesListView = doctor.getMessageList();
         ListView<String> healthHistoriesListView = doctor.getHealthHistoryList();
         ListView<String> prescriptionsListView = doctor.getPrescriptionList();
 
-        messageListView.setItems(messagesListView.getItems());
-        healthHistoryListView.setItems(healthHistoriesListView.getItems());
-        prescriptionListView.setItems(prescriptionsListView.getItems());
+        messageList.setItems(messagesListView.getItems());
+        healthHistoryList.setItems(healthHistoriesListView.getItems());
+        prescriptionList.setItems(prescriptionsListView.getItems());
 
-		contactArea.setText(doctor.getContactInfo());
-		insuranceArea.setText(doctor.getInsuranceInfo());
-		pharmacyArea.setText(doctor.getPharmacyInfo());
+		
+		messageList.setOnMouseClicked(e -> {
+		    if (e.getClickCount() == 2 && !messageList.getItems().get(0).equals("You have no messages")) {
+		        String selectedMessage = messageList.getSelectionModel().getSelectedItem();
+		        System.out.println(selectedMessage + " opened");
+		        control.popup(stage, doctor.getMessage(selectedMessage), "Message");
+		    }
+		});
+		
+		healthHistoryList.setOnMouseClicked(e -> {
+			    if (e.getClickCount() == 2 && !healthHistoryList.getItems().get(0).equals("You have no visits")) {
+			        String selectedRecord = healthHistoryList.getSelectionModel().getSelectedItem();
+			        System.out.println(selectedRecord + " opened");
+			        control.popup(stage, doctor.getRecord(selectedRecord), "Record");
+			    }
+		});
+		 
+        prescriptionList.setOnMouseClicked(e -> {
+		    if (e.getClickCount() == 2 && !prescriptionList.getItems().get(0).equals("You have no presctiption")) { 
+		        String selectedPrescription = prescriptionList.getSelectionModel().getSelectedItem();
+		        System.out.println(selectedPrescription + " opened");
+		        control.popup(stage, doctor.getPrescription(selectedPrescription), "Prescription");
+		    }
+		});
     }
 
     private void logout() {
