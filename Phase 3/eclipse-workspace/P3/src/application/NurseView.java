@@ -4,6 +4,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -27,6 +29,11 @@ public class NurseView {
     private Scene nurseScene;
     private Nurse nurse;
     private Text alert;
+    private ListView<String> prescriptionListView;
+    private ListView<String> healthHistoryListView;
+    private ListView<String> messageListView;
+    private TextArea healthRecordArea;
+    private TextArea messageArea;
 
     public NurseView(Stage stage, Controller control, int width, int height) {
         this.stage = stage;
@@ -111,14 +118,9 @@ public class NurseView {
         return finderBox;
     }
 
-    private Scene createPortalScene() {
-    	
-        Text heading = new Text("Nurse Portal");
-        heading.setFont(Font.font("Arial", FontWeight.BOLD, 34));
-        heading.setTextAlignment(TextAlignment.CENTER);
-        
-        
-     // Dropdown menu for Weight with options from 80 to 200lbs
+    
+    private HBox createDropdownMenus() {
+    	// Dropdown menu for Weight
         ComboBox<String> weightDropdown = new ComboBox<>();
         for (int i = 50; i <= 500; i=i+1) {
             weightDropdown.getItems().add(i + " lbs");
@@ -166,37 +168,61 @@ public class NurseView {
         HBox dropdownMenus = new HBox(20);
         dropdownMenus.getChildren().addAll(weightDropdown, heightDropdown, temperatureDropdown, bloodPressureDropdown /*, ageDropdown*/);
         dropdownMenus.setAlignment(Pos.CENTER); 
+        
+        return dropdownMenus;
+    }
 
-     // Text areas for medical history with increased size
-        TextArea allergiesField = new TextArea();
-        allergiesField.setPromptText("Allergies");
-        allergiesField.setPrefSize(400, 80); // Set preferred size
+    private GridPane createDataGrid() {
+    	Label prescriptionLabel = new Label("Prescriptions");
+        prescriptionListView = new ListView<>();
+        prescriptionListView.setPrefSize(300, 200);
+		VBox prescriptionBox =  new VBox(prescriptionLabel, prescriptionListView);        
+		
+		
+		Label healthHistoryLabel = new Label("Health History");
+        healthHistoryListView = new ListView<>();
+        healthHistoryListView.setPrefSize(300, 200);
+		VBox healthHistoryBox =  new VBox(healthHistoryLabel, healthHistoryListView);   
+		
+		
+		Label healthRecordLabel = new Label("New Health Record");
+		healthRecordArea = new TextArea();
+		healthRecordArea.setPrefSize(300, 200);
+		healthRecordArea.setPromptText("Allergies, Immunization, Health issues/concerns");
+		Button saveButton = new Button("Send");
+		VBox healthRecordBox = new VBox(healthRecordLabel, healthRecordArea, saveButton);
+		
+		
+		Label viewMessagesLabel = new Label("Messages");
+        messageListView = new ListView<>();
+        messageListView.setPrefSize(300, 200);
+		VBox viewMessageBox =  new VBox(viewMessagesLabel, messageListView); 
+		
+		
+		Label sendMessageLabel = new Label("Send a message");
+		messageArea = new TextArea();
+		messageArea.setPrefSize(300, 200);
+		messageArea.setPromptText("Enter your message here");
+		Button sendButton = new Button("Send");
+		VBox sendMessageBox = new VBox(sendMessageLabel, messageArea, sendButton);
+		
 
-        TextArea previousHealthIssueField = new TextArea();
-        previousHealthIssueField.setPromptText("Previous Health Issue");
-        previousHealthIssueField.setPrefSize(400, 80);
-
-        // 
-        TextArea previousPrescriptionField = new TextArea();
-        previousPrescriptionField.setPromptText("Previous Prescription");
-        previousPrescriptionField.setPrefSize(400, 80);
-
-        TextArea immunizationHistoryField = new TextArea();
-        immunizationHistoryField.setPromptText("Immunization History");
-        immunizationHistoryField.setPrefSize(400, 80);
-
-
-        // GridPane for 2x2 text fields
-        GridPane textFieldGrid = new GridPane();
-        textFieldGrid.setHgap(20);
-        textFieldGrid.setVgap(20);
-        textFieldGrid.add(allergiesField, 0, 0);
-        textFieldGrid.add(previousHealthIssueField, 1, 0);
-        textFieldGrid.add(previousPrescriptionField, 0, 1);
-        textFieldGrid.add(immunizationHistoryField, 1, 1);
-        textFieldGrid.setAlignment(Pos.CENTER);
-
-        Button back = new Button("Back");
+        GridPane dataGrid = new GridPane();
+        dataGrid.setHgap(20);
+        dataGrid.setVgap(20);
+        dataGrid.add(prescriptionBox, 0, 0);
+        dataGrid.add(healthHistoryBox, 1, 0);
+        dataGrid.add(healthRecordBox, 0, 1);
+        dataGrid.add(sendMessageBox, 1, 1);
+        dataGrid.add(viewMessageBox, 0, 2, 2, 1);
+        dataGrid.setAlignment(Pos.CENTER);
+        
+        return dataGrid;
+    }
+    
+    
+    private HBox createFooter() {
+    	Button back = new Button("Back");
         back.setOnAction(e -> backToLogin());
 
         // Create a new Save button
@@ -206,20 +232,51 @@ public class NurseView {
         });
 
         // Horizontal box for Back and Save buttons
-        HBox buttonBox = new HBox(10); // 10 is spacing between buttons
-        buttonBox.getChildren().addAll(back, save);
-        buttonBox.setAlignment(Pos.CENTER);
+        HBox footer = new HBox(10); // 10 is spacing between buttons
+        footer.getChildren().addAll(back, save);
+        footer.setAlignment(Pos.CENTER);
+        
+        return footer;
+    }
+    
+    
+    private HBox createHeader() {
+    	Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
+		ImageView logoView = new ImageView(logo);
+		logoView.setFitWidth(75);
+	    logoView.setPreserveRatio(true);
+    	
+    	Text heading = new Text("Nurse Portal");
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 34));
+        heading.setTextAlignment(TextAlignment.CENTER);
+        
+        Button logoutButton = new Button("Logout");
+		logoutButton.setOnAction(e -> {
+			backToLogin();
+		});
+		
+		HBox header = new HBox(30);
+		header.setAlignment(Pos.CENTER);
+		header.getChildren().addAll(logoView, heading, logoutButton);	
+		
+		return header;
+    }
+    
+    
+    private Scene createPortalScene() {
 
         VBox layout = new VBox(20);
         layout.setPadding(new Insets(30, 30, 30, 30));
         layout.setAlignment(Pos.CENTER);
-        layout.getChildren().addAll(heading, createFinderBox(), alert, dropdownMenus, textFieldGrid, buttonBox); // Replace 'back' with 'buttonBox'
+        layout.getChildren().addAll(createHeader(), createFinderBox(), alert, createDropdownMenus(), createDataGrid(), createFooter());
 
         return new Scene(layout, width, height);
     }
     
     private void populateData() {
-    	
+    	messageListView = nurse.getMessageList();
+    	healthHistoryListView = nurse.getHealthHistoryList();
+    	prescriptionListView = nurse.getPrescriptionList();
     }
 
     private void backToLogin() {

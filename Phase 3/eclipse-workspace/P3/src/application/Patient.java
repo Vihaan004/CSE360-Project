@@ -82,7 +82,7 @@ public class Patient {
     	visitDir = new File(patientDirPath + File.separator + "visits");
     	prescriptionDir = new File(patientDirPath + File.separator + "prescriptions");
     	messageDir = new File(patientDirPath + File.separator + "messages");
-    	healthHistoryDir = new File(patientDirPath + File.separator + "healthHistory");
+    	healthHistoryDir = new File(patientDirPath + File.separator + "health history");
     }
     
     private void buildFiles() {
@@ -122,83 +122,47 @@ public class Patient {
     
     // fetch data functions
     public ListView<String> getVisitList() {
-    	
-    	ListView<String> visitList = new ListView<>();
-//    	System.out.println(new File("Patients\\E_E_2024-04-01\\visits").exists());
-//    	System.out.println(visitDir.getPath());
-    	
-    	if (visitDir != null && visitDir.exists() && visitDir.isDirectory()) {
-		    
-			File[] visitFiles = visitDir.listFiles();
-		    if (visitFiles != null && visitFiles.length > 0) {
-		        for (File file : visitFiles) {
-		            if (file.isFile()) {
-		                visitList.getItems().add(file.getName());
-		            }
-		        }
-		    } else {
-		        // Directory exists but no files found
-		        visitList.getItems().add("You have no visits");
-		    }
-		} else {
-		    // Directory is null or does not exist
-		    visitList.getItems().add("You have no visits");
-		}
-    	
-    	return visitList;
+    	return getFiles(visitDir);
     }
-    
     
     public ListView<String> getPrescriptionList() {
-    	
-    	ListView<String> PrescriptionList = new ListView<>();
-    	
-    	if (prescriptionDir != null && prescriptionDir.exists() && prescriptionDir.isDirectory()) {
-		    
-			File[] prescriptionFiles = prescriptionDir.listFiles();
-		    if (prescriptionFiles != null && prescriptionFiles.length > 0) {
-		        for (File file : prescriptionFiles) {
-		            if (file.isFile()) {
-		                PrescriptionList.getItems().add(file.getName());
-		            }
-		        }
-		    } else {
-		        // Directory exists but no files found
-		        PrescriptionList.getItems().add("You have no prescriptions");
-		    }
-		} else {
-		    // Directory is null or does not exist
-		    PrescriptionList.getItems().add("You have no prescriptions");
-		}
-    	
-    	return PrescriptionList;
+    	return getFiles(prescriptionDir);
     }
-    
     
     public ListView<String> getMessageList() {
+    	 return getFiles(messageDir);
+    }
+
+    public ListView<String> getHealthHistoryList() {
+    	return getFiles(healthHistoryDir);
+    }
+
+    
+    public ListView<String> getFiles(File dir) {
     	
-    	ListView<String> messageList = new ListView<>();
+    	ListView<String> fileList = new ListView<>();
     	
-    	if (messageDir != null && messageDir.exists() && messageDir.isDirectory()) {
+    	if (dir != null && dir.exists() && dir.isDirectory()) {
 		    
-			File[] messageFiles = messageDir.listFiles();
-		    if (messageFiles != null && messageFiles.length > 0) {
-		        for (File file : messageFiles) {
+			File[] files = dir.listFiles();
+		    if (files != null && files.length > 0) {
+		        for (File file : files) {
 		            if (file.isFile()) {
-		                messageList.getItems().add(file.getName());
+		                fileList.getItems().add(file.getName());
 		            }
 		        }
 		    } else {
 		        // Directory exists but no files found
-		        messageList.getItems().add("You have no messages");
+		        fileList.getItems().add("You have no " + dir.getName());
 		    }
 		} else {
 		    // Directory is null or does not exist
-		   messageList.getItems().add("You have no messages");
+		   fileList.getItems().add("You have no " + dir.getName());
 		}
     	
-    	return messageList;
+    	return fileList;
     }
+    
     
     
     public Scene createVisitScene(String selectedVisit) {
