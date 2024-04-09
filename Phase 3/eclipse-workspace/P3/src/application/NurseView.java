@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 
@@ -29,6 +30,12 @@ public class NurseView {
     private Scene nurseScene;
     private Nurse nurse;
     private Text alert;
+    
+    private ComboBox<String> weightDropdown;
+    private ComboBox<String> heightDropdown;
+    private ComboBox<String> temperatureDropdown;
+    private ComboBox<String> bloodPressureDropdown;
+
     private ListView<String> prescriptionListView;
     private ListView<String> healthHistoryListView;
     private ListView<String> messageListView;
@@ -222,18 +229,19 @@ public class NurseView {
     
     
     private HBox createFooter() {
-    	Button back = new Button("Back");
-        back.setOnAction(e -> backToLogin());
-
-        // Create a new Save button
+    	
         Button save = new Button("Save");
         save.setOnAction(e -> {
-            // Add action logic for the Save button
+        	int weight = Integer.parseInt(weightDropdown.getValue().replaceAll("\\D+", ""));
+            int height = Integer.parseInt(heightDropdown.getValue().replaceAll("\\D+", ""));
+            int temp = Integer.parseInt(temperatureDropdown.getValue().replaceAll("\\D+", ""));
+            String BP = bloodPressureDropdown.getValue();
+
+            nurse.setPatientVitals(weight, height, temp, BP);
         });
 
-        // Horizontal box for Back and Save buttons
         HBox footer = new HBox(10); // 10 is spacing between buttons
-        footer.getChildren().addAll(back, save);
+        footer.getChildren().addAll(save);
         footer.setAlignment(Pos.CENTER);
         
         return footer;
@@ -252,7 +260,7 @@ public class NurseView {
         
         Button logoutButton = new Button("Logout");
 		logoutButton.setOnAction(e -> {
-			backToLogin();
+			logout();
 		});
 		
 		HBox header = new HBox(30);
@@ -274,12 +282,19 @@ public class NurseView {
     }
     
     private void populateData() {
-    	messageListView = nurse.getMessageList();
-    	healthHistoryListView = nurse.getHealthHistoryList();
-    	prescriptionListView = nurse.getPrescriptionList();
+    	
+        ListView<String> messagesListView = nurse.getPatientMessageList();
+        ListView<String> healthHistoriesListView = nurse.getPatientHealthHistoryList();
+        ListView<String> prescriptionsListView = nurse.getPatientPrescriptionList();
+
+        messageListView.setItems(messagesListView.getItems());
+        healthHistoryListView.setItems(healthHistoriesListView.getItems());
+        prescriptionListView.setItems(prescriptionsListView.getItems());
     }
 
-    private void backToLogin() {
+
+
+    private void logout() {
     	alert.setText("");
         control.appStart();
     }

@@ -20,6 +20,11 @@ public class Patient {
     private String firstName;
     private String lastName;
     private LocalDate dob;
+    private int weight;
+    private int height;
+    private int temp;
+    private int age;
+    private String BP;
     
     private File infoFile;
     private File contactFile;
@@ -37,6 +42,7 @@ public class Patient {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
+        this.age = Period.between(dob, LocalDate.now()).getYears();
 		buildDirs();
 		buildFiles();		
     }
@@ -104,8 +110,26 @@ public class Patient {
     }
     
     public String getAge() {
-    	return Integer.toString(Period.between(dob, LocalDate.now()).getYears());
+    	return Integer.toString(age);
     }
+    
+    public String getWeight() {
+    	return Integer.toString(weight);
+    }
+    
+    public String getHeight() {
+    	return Integer.toString(weight);
+    }
+    
+    public String getTemp() {
+    	return Integer.toString(temp);
+    }
+    
+    public String getBP() {
+    	return BP;
+    }
+    
+    
     
     public String getContactInfo() {
     	return fileRead(contactFile.getName(), patientDir);
@@ -206,6 +230,14 @@ public class Patient {
     	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
     }
     
+    public void setVitals(int weight, int height, int temp, String BP) {
+    	this.weight = weight;
+    	this.height = height;
+    	this.temp = temp;
+    	this.BP = BP;
+    	String content = getWeight() + getHeight() + getTemp() + getBP() + getAge();
+    	fileWrite("vitals", patientDir, content);
+    }
     
     public void saveMessage(String sender, String message) {
     	LocalDateTime now = LocalDateTime.now();
