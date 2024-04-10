@@ -1,7 +1,7 @@
 # Office Automation System for Pediatric Doctor's Office
 Team 40 - CSE 360 Tuesday 1:30 pm
 
-Team Me
+Team Mem
 
 
 ## Project Overview
