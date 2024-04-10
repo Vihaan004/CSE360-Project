@@ -3,7 +3,7 @@ Team 40 - CSE 360 Tuesday 1:30 pm
 
 Team Members
 
-Vihaa
+Vihaan
 
 
 ## Project Overview
