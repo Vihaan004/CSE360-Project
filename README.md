@@ -5,7 +5,7 @@ Team Members
 
 Vihaan Patel
 
-Naman
+Naman G
 
 ## Project Overview
 This project aims to develop an Office Automation System specifically designed for a Pediatric Doctor's Office. Targeted users include doctors, nurses, and patients (or their parents/guardians). The primary goal of this software is to minimize paperwork and enhance the accessibility of patient records. Although the ideal implementation would be accessible via both web and mobile applications, the scope of this project, as part of the CSE 360 class, is limited to creating a GUI-based desktop application. This application will be developed using Java UI techniques learned in CSE 205 and enhanced with JavaFX.
