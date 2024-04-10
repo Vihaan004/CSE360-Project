@@ -2,7 +2,7 @@
 Team 40 - CSE 360 Tuesday 1:30 pm
 
 Team Members
-V
+Vi
 
 
 ## Project Overview
