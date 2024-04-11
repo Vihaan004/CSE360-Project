@@ -273,7 +273,7 @@ public class Patient {
     }
 
 
-    
+    // saves prescription given by the doctor
     public void savePrescription(String prescription) {
     	LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
