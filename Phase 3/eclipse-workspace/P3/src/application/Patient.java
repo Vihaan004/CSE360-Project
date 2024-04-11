@@ -261,15 +261,16 @@ public class Patient {
     }
     
     public void saveHealthRecord(String record) {
-    	LocalDateTime now = LocalDateTime.now();
-    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
-    	String formattedDateTime = now.format(formatter);
-    	
-    	String filename = "Record " + formattedDateTime + ".txt";
-    	
-    	// Append the new health record to the existing health history file
-    	fileAppend(filename, healthHistoryDir, record);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
+        String formattedDateTime = now.format(formatter);
+        
+        String filename = "Record " + formattedDateTime + ".txt";
+
+        // Append the new health record to the existing health history file
+        fileAppend(filename, healthHistoryDir, record);
     }
+
 
     
     public void savePrescription(String prescription) {
@@ -331,8 +332,8 @@ public class Patient {
     }
     
     private void fileAppend(String filename, File dir, String content) {
-    	FileWriter writer = null;
-    	try {
+        FileWriter writer = null;
+        try {
             // Open the file in append mode
             writer = new FileWriter(new File(dir.getPath() + File.separator + filename), true);
             // Append the content to the file
@@ -341,15 +342,16 @@ public class Patient {
         } catch (IOException e) {
             System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
         } finally {
-        	if (writer != null) {
-        		try {
-        			writer.close();
-        		} catch (IOException e) {
-        			System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
+                }
             }
         }
     }
-}
+
     
 
 }
