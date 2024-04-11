@@ -264,6 +264,8 @@ public class Patient {
     	LocalDateTime now = LocalDateTime.now();
     	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
     	String formattedDateTime = now.format(formatter);
+    	
+    	String filename = "Record " + formattedDateTime + ".txt";
     }
 
     
