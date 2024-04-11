@@ -331,6 +331,13 @@ public class Patient {
     
     private void fileAppend(String filename, File dir, String content) {
     	FileWriter writer = null;
+    	try {
+            // Open the file in append mode
+            writer = new FileWriter(new File(dir.getPath() + File.separator + filename), true);
+            // Append the content to the file
+            writer.write(content + "\n");
+            System.out.println("Data Appended to file: " + filename);
+        } 
     }
     
 
