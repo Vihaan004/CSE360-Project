@@ -337,7 +337,8 @@ public class Patient {
             // Append the content to the file
             writer.write(content + "\n");
             System.out.println("Data Appended to file: " + filename);
-        } 
+        } catch (IOException e) {
+            System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
     }
     
 
