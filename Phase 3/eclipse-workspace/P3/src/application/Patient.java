@@ -262,6 +262,7 @@ public class Patient {
     
     public void saveHealthRecord(String record) {
     	LocalDateTime now = LocalDateTime.now();
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
     }
 
     
