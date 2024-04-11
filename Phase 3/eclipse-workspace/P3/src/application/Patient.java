@@ -240,14 +240,14 @@ public class Patient {
     
     // edit database
     public void editInfo(String contact, String insurance, String pharmacy) {
-    	fileWrite(contactFile.getName(), patientDir, contact);
-    	fileWrite(insuranceFile.getName(), patientDir, insurance);
-    	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
+    	fileAppend(contactFile.getName(), patientDir, contact);
+    	fileAppend(insuranceFile.getName(), patientDir, insurance);
+    	fileAppend(pharmacyFile.getName(), patientDir, pharmacy);
     }
     
     public void setVitals(String weight, String height, String temp, String BP) {
     	String content = weight +"\n"+ height +"\n"+ temp +"\n"+ BP +"\n"+ getAge()+"\n";
-    	fileWrite("vitals.txt", patientDir, content);
+    	fileAppend("vitals.txt", patientDir, content);
     }
     
     public void saveMessage(String sender, String message) {
@@ -257,18 +257,20 @@ public class Patient {
         
         String filename = sender + " " + formattedDateTime + ".txt";
         
-        fileWrite(filename, messageDir, message);
+        fileAppend(filename, messageDir, message);
     }
     
     public void saveHealthRecord(String record) {
-    	LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
         String filename = "Record " + formattedDateTime + ".txt";
 
-        fileWrite(filename, healthHistoryDir, record);
-	}
+        // Append the new health record to the existing health history file
+        fileAppend(filename, healthHistoryDir, record);
+    }
+
 
     
     public void savePrescription(String prescription) {
@@ -278,7 +280,7 @@ public class Patient {
         
         String filename = "Prescription " + formattedDateTime + ".txt";
 
-        fileWrite(filename, prescriptionDir, prescription);
+        fileAppend(filename, prescriptionDir, prescription);
     }
     
     public void saveVisit(String summary) {
@@ -288,7 +290,7 @@ public class Patient {
         
         String filename = "Visit " + formattedDateTime + ".txt";
 
-        fileWrite(filename, visitDir, summary);
+        fileAppend(filename, visitDir, summary);
     }
     
     
@@ -329,5 +331,29 @@ public class Patient {
         }
     }
     
+    private void fileAppend(String filename, File dir, String content) {
+        FileWriter writer = null;
+        try {
+            // Open the file in append mode
+            writer = new FileWriter(new File(dir.getPath() + File.separator + filename), true);
+            // Append the content to the file
+            writer.write(content + "\n");
+            System.out.println("Data Appended to file: " + filename);
+        } catch (IOException e) {
+            System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
+                }
+            }
+        }
+    }
+
+    
 
 }
+
+
