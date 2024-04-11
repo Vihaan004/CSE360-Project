@@ -266,6 +266,8 @@ public class Patient {
     	String formattedDateTime = now.format(formatter);
     	
     	String filename = "Record " + formattedDateTime + ".txt";
+    	
+    	// Append the new health record to the existing health history file
     }
 
     
