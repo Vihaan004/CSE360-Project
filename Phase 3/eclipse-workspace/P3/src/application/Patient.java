@@ -330,7 +330,7 @@ public class Patient {
             }
         }
     }
-    
+    // appends the files instead of rewriting on the previous ones with the same name
     private void fileAppend(String filename, File dir, String content) {
         FileWriter writer = null;
         try {
