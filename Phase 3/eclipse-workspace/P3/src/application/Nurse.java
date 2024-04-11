@@ -39,7 +39,7 @@ public class Nurse {
 	}
 	
 	public void saveHealthRecord(String record) {
-		patient.addHealthRecord(record);
+		patient.saveHealthRecord(record);
 	}
 	
 	public void saveMessage(String message) {
