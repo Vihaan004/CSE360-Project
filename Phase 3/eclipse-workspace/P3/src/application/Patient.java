@@ -247,7 +247,7 @@ public class Patient {
     
     public void setVitals(String weight, String height, String temp, String BP) {
     	String content = weight +"\n"+ height +"\n"+ temp +"\n"+ BP +"\n"+ getAge()+"\n";
-    	fileWrite("vitals.txt", patientDir, content);
+    	fileAppend("vitals.txt", patientDir, content);
     }
     
     public void saveMessage(String sender, String message) {
