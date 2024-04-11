@@ -1,3 +1,5 @@
+// CSE 360 Group Project
+// Team 40 - Tuesday 1:30pm
 package application;
 
 import javafx.geometry.Insets;
@@ -19,32 +21,40 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+// Class DoctorView: Represents the GUI interface for doctors in the application.
 public class DoctorView {
 	
-    private Stage stage;
-    private Controller control;
-    private int width, height;
-    private Scene doctorScene;
-    private Doctor doctor;
-    private Text alert;
+    // Instance variables for the class
+    private Stage stage; // Primary stage for the application's GUI
+    private Controller control; // Controller to manage interactions and navigation
+    private int width, height; // Dimensions of the GUI window
+    private Scene doctorScene; // Scene for the doctor's view
+    private Doctor doctor; // Doctor object to interact with the model
+    private Text alert; // Alert text for displaying messages
     
+// Text objects for showing patient's vital signs
     private Text weight;
     private Text patientHeight;
     private Text temp;
     private Text BP;
     private Text age;
-    
+	
+// ListViews for displaying lists of prescriptions, health history, and messages
     private ListView<String> prescriptionList;
     private ListView<String> healthHistoryList;
     private ListView<String> messageList;
+	
+ // TextArea for input fields for new prescriptions, messages to patients, and visit summaries
     private TextArea newPrescriptionArea;
     private TextArea messageArea;
     private TextArea summaryArea;
-    
+
+// TextArea for displaying contact, insurance, and pharmacy information of the patient
     private TextArea contactArea;
     private TextArea insuranceArea;
     private TextArea pharmacyArea;
 
+// Constructor: Initializes the view with a stage, controller, and window dimensions
     public DoctorView(Stage stage, Controller control, int width, int height) {
         this.stage = stage;
         this.control = control;
@@ -55,11 +65,13 @@ public class DoctorView {
         doctorScene = createPortalScene();
     }
 
+// Method to display the doctor scene	
     public void show() {
         stage.setScene(doctorScene);
         stage.show();
     }
-    
+
+// Validates patient search input fields
     private boolean validateFields(TextField fNameField, TextField lNameField, DatePicker dobField) {
 	    String fname = fNameField.getText().trim();
 	    String lname = lNameField.getText().trim();
@@ -87,7 +99,8 @@ public class DoctorView {
 	    }
 	    return true;
 	}
-    
+
+// Creates the patient finder box
     private HBox createFinderBox() {
     	Label fNameLabel = new Label("First Name: ");
         TextField fNameField = new TextField();
@@ -128,7 +141,7 @@ public class DoctorView {
         return finderBox;
     }
 
-    
+// Creates a box for displaying patient's vital information
     private HBox createPatientVitalsBox() {
     	
 	    weight = new Text("Weight(lbs): ");
@@ -154,7 +167,8 @@ public class DoctorView {
         
 	    return vitalsBox;
     }
-    
+	
+// Creates an information box for contact, insurance, and pharmacy details    
 	private VBox createInfoBox() {
 		
 		Label contactLabel = new Label("Contact");
@@ -183,6 +197,7 @@ public class DoctorView {
 		return infoBox;
 	}
 
+// Creates a GridPane containing patient data and interaction forms
     private GridPane createDataGrid() {
     	Label prescriptionLabel = new Label("Prescriptions");
         prescriptionList = new ListView<>();
@@ -279,7 +294,7 @@ public class DoctorView {
         return dataGrid;
     }
     
-    
+// Creates the header for the doctor view
     private HBox createHeader() {
     	Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
 		ImageView logoView = new ImageView(logo);
@@ -302,7 +317,7 @@ public class DoctorView {
 		return header;
     }
     
-    
+// Constructs the scene for the doctor portal
     private Scene createPortalScene() {
 
         VBox layout = new VBox(20);
@@ -312,7 +327,8 @@ public class DoctorView {
 
         return new Scene(layout, width, height);
     }
-    
+	
+// Populates the GUI with data from the selected patient
     private void populateData() {
     	weight.setText("Weight(lbs): " + doctor.getPatientWeight());
     	patientHeight.setText("Height(cm): " + doctor.getPatientHeight());
@@ -362,6 +378,7 @@ public class DoctorView {
 		});
     }
 
+// Logs out from the doctor view and returns to the start view
     private void logout() {
     	alert.setText("");
         control.appStart();
