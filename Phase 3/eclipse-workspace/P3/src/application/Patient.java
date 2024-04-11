@@ -278,7 +278,7 @@ public class Patient {
         
         String filename = "Prescription " + formattedDateTime + ".txt";
 
-        fileWrite(filename, prescriptionDir, prescription);
+        fileAppend(filename, prescriptionDir, prescription);
     }
     
     public void saveVisit(String summary) {
