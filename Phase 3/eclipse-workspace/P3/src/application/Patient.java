@@ -260,7 +260,7 @@ public class Patient {
         
         fileAppend(filename, messageDir, message);
     }
-    
+    // saves health record updated by the nurse
     public void saveHealthRecord(String record) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
