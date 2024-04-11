@@ -260,7 +260,7 @@ public class Patient {
         fileWrite(filename, messageDir, message);
     }
     
-    
+    public void saveHealthRecord(String record) {}
 
     
     public void savePrescription(String prescription) {
