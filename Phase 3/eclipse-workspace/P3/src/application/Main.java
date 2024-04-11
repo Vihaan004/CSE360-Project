@@ -5,8 +5,8 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
-	int width = 1400;
-	int height = 900;
+	int width = 1200;
+	int height = 800;
 	
 	public void start(Stage primaryStage) {
 		Controller control = new Controller(primaryStage, width, height);
