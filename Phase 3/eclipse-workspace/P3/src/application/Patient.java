@@ -257,7 +257,7 @@ public class Patient {
         
         String filename = sender + " " + formattedDateTime + ".txt";
         
-        fileWrite(filename, messageDir, message);
+        fileAppend(filename, messageDir, message);
     }
     
     public void saveHealthRecord(String record) {
