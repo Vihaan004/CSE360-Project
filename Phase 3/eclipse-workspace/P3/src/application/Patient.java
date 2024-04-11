@@ -339,7 +339,16 @@ public class Patient {
             System.out.println("Data Appended to file: " + filename);
         } catch (IOException e) {
             System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
+        } finally {
+        	if (writer != null) {
+        		try {
+        			writer.close();
+        		} catch (IOException e) {
+        			System.out.println("SYSTEM ERROR: Patient->fileAppend : " + filename);
+            }
+        }
     }
+}
     
 
 }
