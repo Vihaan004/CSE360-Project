@@ -260,15 +260,7 @@ public class Patient {
         fileWrite(filename, messageDir, message);
     }
     
-    public void saveHealthRecord(String record) {
-    	LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
-        String formattedDateTime = now.format(formatter);
-        
-        String filename = "Record " + formattedDateTime + ".txt";
-
-        fileWrite(filename, healthHistoryDir, record);
-	}
+    
 
     
     public void savePrescription(String prescription) {
