@@ -329,7 +329,9 @@ public class Patient {
         }
     }
     
-    private void fileAppend(String filename, File dir, String content) {}
+    private void fileAppend(String filename, File dir, String content) {
+    	FileWriter writer = null;
+    }
     
 
 }
