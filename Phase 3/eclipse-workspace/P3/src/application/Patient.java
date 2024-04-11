@@ -240,7 +240,7 @@ public class Patient {
     
     // edit database
     public void editInfo(String contact, String insurance, String pharmacy) {
-    	fileWrite(contactFile.getName(), patientDir, contact);
+    	fileAppend(contactFile.getName(), patientDir, contact);
     	fileWrite(insuranceFile.getName(), patientDir, insurance);
     	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
     }
