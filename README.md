@@ -14,7 +14,7 @@ This project aims to develop an Office Automation System specifically designed f
 
 ## System Operation and Functionality
 ### Initial Interaction
-- Upon a patient's arrival, a staff nurse performs the initial meet and greet.
+- When the patient arrives, a staff nurse performs the initial meet and greet.
 - The nurse records vital statistics (weight, height, body temperature, and blood pressure for patients over 12) and enters them into the system associated with the patient's current visit.
 
 ### Examination Room Process
