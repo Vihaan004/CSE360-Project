@@ -271,6 +271,15 @@ public class Patient {
 	}
 
     
+    public void savePrescription(String prescription) {
+    	LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
+        String formattedDateTime = now.format(formatter);
+        
+        String filename = "Prescription " + formattedDateTime + ".txt";
+
+        fileWrite(filename, prescriptionDir, prescription);
+    }
     
     public void saveVisit(String summary) {
     	LocalDateTime now = LocalDateTime.now();
@@ -319,6 +328,8 @@ public class Patient {
             }
         }
     }
+    
+    private void fileAppend(String filename, File dir, String content) {}
     
 
 }
