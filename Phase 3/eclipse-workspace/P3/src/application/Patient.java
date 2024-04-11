@@ -241,8 +241,8 @@ public class Patient {
     // edit database
     public void editInfo(String contact, String insurance, String pharmacy) {
     	fileAppend(contactFile.getName(), patientDir, contact);
-    	fileWrite(insuranceFile.getName(), patientDir, insurance);
-    	fileWrite(pharmacyFile.getName(), patientDir, pharmacy);
+    	fileAppend(insuranceFile.getName(), patientDir, insurance);
+    	fileAppend(pharmacyFile.getName(), patientDir, pharmacy);
     }
     
     public void setVitals(String weight, String height, String temp, String BP) {
