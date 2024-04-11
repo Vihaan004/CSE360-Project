@@ -249,7 +249,8 @@ public class Patient {
     	String content = weight +"\n"+ height +"\n"+ temp +"\n"+ BP +"\n"+ getAge()+"\n";
     	fileAppend("vitals.txt", patientDir, content);
     }
-    
+
+    // function responsible for saving all the messages, uploaded by patient, nurse, doctor
     public void saveMessage(String sender, String message) {
     	LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
