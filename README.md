@@ -3,10 +3,10 @@ Team 40 - CSE 360 Tuesday 1:30 pm
 
 ## Team Members
 
-- Vihaan Patel
-- Naman Gandhi
-- Ayush Shejwal
-- Swar Khatav
+- Vihaan Tejas Patel
+- Naman Vaibhav Gandhi
+- Ayush Sunil Shejwal
+- Swar Mahesh Khatav
 - Gautam Mehta
 
 ## Project Overview
