@@ -280,7 +280,7 @@ public class Patient {
         
         String filename = "Prescription " + formattedDateTime + ".txt";
 
-        fileWrite(filename, prescriptionDir, prescription);
+        fileAppend(filename, prescriptionDir, prescription);
     }
     
     public void saveVisit(String summary) {
@@ -290,7 +290,7 @@ public class Patient {
         
         String filename = "Visit " + formattedDateTime + ".txt";
 
-        fileWrite(filename, visitDir, summary);
+        fileAppend(filename, visitDir, summary);
     }
     
     
