@@ -268,6 +268,7 @@ public class Patient {
     	String filename = "Record " + formattedDateTime + ".txt";
     	
     	// Append the new health record to the existing health history file
+    	fileAppend(filename, healthHistoryDir, record);
     }
 
     
