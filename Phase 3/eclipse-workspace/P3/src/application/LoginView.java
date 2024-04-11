@@ -3,9 +3,9 @@
 
 package application;
 
-// Import necessary JavaFX and Java Time libraries
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -25,180 +25,204 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-// Class definition for the login view of the application
 public class LoginView {
 
-    // Class variables
 	private Stage stage;
 	private int width, height;
 	private Scene startupScene;
 	private Scene loginScene;
 	private Controller control;
-	Text alert = new Text(""); // For displaying login or registration errors
+	
+	Text alert = new Text("");
 
 	private String firstName;
     private String lastName;
     private LocalDate dob;
 	
-	// Constructor
 	LoginView(Stage stage, Controller control, int width, int height) {
 		this.stage = stage;
 		this.control = control;
 		this.width = width;
 		this.height = height;
-		// Initialize scenes for startup and login
 		startupScene = createStartupScene();
 		loginScene = createLoginScene();
 	}
 	
-	// Display the startup scene
+	// startup page
 	public void show() {
 		stage.setScene(startupScene);
 	    stage.show();
 	}
 	
-	// Switch to the login scene
+	// login page
 	private void loginPage() {
 		stage.setScene(loginScene);
 	    stage.show();
 	}
 	
-	// Creates the initial startup scene with user type selection
+	// create and set startup scene to current stage
 	private Scene createStartupScene() {
+		
 	    GridPane grid = new GridPane();
 	    grid.setAlignment(Pos.CENTER);
 	    grid.setHgap(10);
 	    grid.setVgap(10);
+//	    grid.setPadding(new Insets(15, 15, 15, 15));
 	    
-	    // Create and add the logo box to the grid
 	    VBox logoBox = createLogoBox("Please select your user type to begin");
 	    grid.add(logoBox, 0, 0);
 	    
-	    // Separator for visual distinction
+	    // Separator line
 	    Separator separator = new Separator();
 	    separator.setOrientation(Orientation.VERTICAL);
-	    separator.setPrefHeight(200); // Set the separator's height
-	    GridPane.setMargin(separator, new Insets(0, 50, 0, 50)); // Add margin around separator
 	    grid.add(separator, 1, 0, 1, 3);
 
-	    // Container for the buttons
+	    separator.setPrefHeight(200); // line height
+	    GridPane.setMargin(separator, new Insets(0, 50, 0, 50)); // margin around the separator
+	    
+	    
 	    VBox buttonBox = new VBox(30);
 
-	    // Initialize buttons for different user types and add action listeners
+	    // Buttons by user type
 	    Button patientButton = new Button("Patient");
 	    patientButton.setMinSize(100, 50);
-	    patientButton.setOnAction(e -> loginPage());
+	    patientButton.setOnAction(e -> {
+	        loginPage();
+	    });
 
 	    Button nurseButton = new Button("Nurse");
 	    nurseButton.setMinSize(100, 50);
-	    nurseButton.setOnAction(e -> control.showNurseView());
+	    nurseButton.setOnAction(e -> {
+	        control.showNurseView();
+	    });
 
 	    Button doctorButton = new Button("Doctor");
 	    doctorButton.setMinSize(100, 50);
-	    doctorButton.setOnAction(e -> control.showDoctorView());
+	    doctorButton.setOnAction(e -> {
+	        control.showDoctorView();
+	    });
 
-	    // Add buttons to the container
 	    buttonBox.getChildren().addAll(patientButton, nurseButton, doctorButton);
+	    // Adding buttons to the grid
 	    grid.add(buttonBox, 3, 0);
 
-	    // Return the constructed scene
+	    // Scene setup
+//	    Scene startupScene = new Scene(grid, width, height);
+//		startupScene.getRoot().requestFocus();
 		return new Scene(grid, width, height);
+	    
 	}
 
-	// Creates the login scene where users can enter their credentials
+	// create and set login scene to current stage
 	private Scene createLoginScene() {
+	
 	    GridPane grid = new GridPane();
 	    grid.setAlignment(Pos.CENTER);
 	    grid.setHgap(10);
 	    grid.setVgap(10);
 	    
-	    // Add the logo box with instructions for login
 	    VBox logoBox = createLogoBox("Enter your name and date of birth");
 	    grid.add(logoBox, 0, 0);
 	    
-	    // Repeat use of separator for visual distinction
+	    // Separator line
 	    Separator separator = new Separator();
 	    separator.setOrientation(Orientation.VERTICAL);
-	    separator.setPrefHeight(200); // Set height
-	    GridPane.setMargin(separator, new Insets(0, 50, 0, 50)); // Add margin
 	    grid.add(separator, 1, 0, 1, 3);
+
+	    separator.setPrefHeight(200); // line height
+	    GridPane.setMargin(separator, new Insets(0, 50, 0, 50)); // margin around the separator
 	    
-	    // Login form container
 	    VBox loginBox = new VBox(10);
+//	    loginBox.setAlignment(Pos.CENTER);
 	    
-	    // First name input field
 	    HBox firstNameBox = new HBox(21);
 	    firstNameBox.setAlignment(Pos.CENTER_LEFT); 
 	    Label firstNameLabel = new Label("First Name:");
-	    TextField firstNameField = new TextField();
-	    firstNameBox.getChildren().addAll(firstNameLabel, firstNameField);
+	    TextField firstNameField = new TextField(); 						// class var
+	    firstNameBox.getChildren().addAll(firstNameLabel, firstNameField); 
 	    
-	    // Last name input field
+	    
 	    HBox lastNameBox = new HBox(21);
 	    lastNameBox.setAlignment(Pos.CENTER_LEFT);
 	    Label lastNameLabel = new Label("Last Name:");
-	    TextField lastNameField = new TextField();
-	    lastNameBox.getChildren().addAll(lastNameLabel, lastNameField);
+	    TextField lastNameField = new TextField(); 							// class var
+	    lastNameBox.getChildren().addAll(lastNameLabel, lastNameField); 
 	    
-	    // Date of birth input field
+	    
 	    HBox dateBox = new HBox(10);
 	    dateBox.setAlignment(Pos.CENTER_LEFT);
 	    Label dobLabel = new Label("Date of Birth:");
-	    DatePicker dobField = new DatePicker();
+	    DatePicker dobField = new DatePicker();								// class var
 	    dobField.setPromptText("MM/DD/YYYY");
 	    dateBox.getChildren().addAll(dobLabel, dobField);
 	    
-	    // Alert text setup
 	    alert.setFont(Font.font("verdana", 12));
 	    alert.setFill(Color.RED);
 	    
-	    // Button container for navigation and actions
 	    HBox buttonBox = new HBox(10);
 	    buttonBox.setAlignment(Pos.CENTER_LEFT);
+	    
 	    Button backButton = new Button("Back");
-	    backButton.setOnAction(e -> control.appStart());
+	    backButton.setOnAction(e -> {
+	    	control.appStart();
+	    });
+	    
 	    Button registerButton = new Button("Register");
 	    registerButton.setOnAction(e -> {
 	    	if(validateFields(firstNameField, lastNameField, dobField)) { register(); }
 	    });
+	    
 	    Button loginButton = new Button("Login");
+	    loginButton.setAlignment(Pos.CENTER_RIGHT);
 	    loginButton.setOnAction(e -> {
 	    	if(validateFields(firstNameField, lastNameField, dobField)) { 
 	    		login(firstNameField, lastNameField, dobField); 
 	    	}
 	    });
+	    
+	   
+//	    Region spacer = new Region();
+//	    HBox.setHgrow(spacer, Priority.ALWAYS); 
+	    
 	    buttonBox.getChildren().addAll(backButton, registerButton, loginButton);
+	    
 	    VBox.setMargin(buttonBox, new Insets(20, 0, 0, 0));
 	    
-	    // Compile components into the login form
+	    
+	    // adding login form to the grid
 	    loginBox.getChildren().addAll(firstNameBox, lastNameBox, dateBox, buttonBox, alert);
 	    grid.add(loginBox, 2, 0);
+		
+	    // scene setup
+//        Scene loginScene = new Scene(grid, width, height);
+//	    loginScene.getRoot().requestFocus();
 	    
-	    // Return the constructed scene
 	    return new Scene(grid, width, height);
 	}
 	
-	// Utility method to create a logo box that can be reused
+	// create common logo section with specified prompt
 	private VBox createLogoBox(String promptText) {
 		VBox logoBox = new VBox(10);
 	    logoBox.setAlignment(Pos.CENTER);
-	    // Load and display the application logo
+	    // Application logo 
 	    Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
 	    ImageView logoView = new ImageView(logo);
 	    logoView.setFitWidth(200);
 	    logoView.setPreserveRatio(true);
+
+//	    Text header = new Text("Welcome to AutoPed");
+//	    header.setFont(Font.font("verdana", 20)); // Set font name and size
 	    
-	    // Display a prompt text below the logo
+	    // prompt
 	    Text prompt = new Text(promptText);
-	    prompt.setFont(Font.font("verdana", 14)); // Set font size and family
+	    prompt.setFont(Font.font("verdana", 14)); // Set font name and size
 	    
-	    // Add the logo and prompt to the container
-	    logoBox.getChildren().addAll(logoView, prompt);
+	    logoBox.getChildren().addAll(logoView, prompt); // add header?
 	    return logoBox;
 	}
 	
-	// Handle registration process
 	private void register() {
+		
 		Patient patient = new Patient(firstName, lastName, dob);
 		if(patient.accountExists()) { 
 			alert.setText("Account already exists, please login");
@@ -211,10 +235,11 @@ public class LoginView {
 			alert.setText("SYSTEM ERROR");
 			alert.setFill(Color.RED);
 		}
+		
 	}
 	
-	// Handle login process
 	private void login(TextField fname, TextField lname, DatePicker date) {
+		
 		Patient patient = new Patient(firstName, lastName, dob);
 		if(!patient.accountExists()) { 
 			alert.setText("Account doesn't exist, please register or check credentials");
@@ -226,9 +251,10 @@ public class LoginView {
 			alert.setText("");
 			control.showPatientView(patient);
 		}
+		
+		
 	}
 	
-	// Validates the input fields for registration and login
 	private boolean validateFields(TextField firstNameField, TextField lastNameField, DatePicker dobField) {
 	    firstName = firstNameField.getText().trim();
 	    lastName = lastNameField.getText().trim();
@@ -238,7 +264,6 @@ public class LoginView {
 	    	return false;
 	    } 
 	    
-	    // Attempt to parse the date of birth field to ensure it follows the correct format
 	    try {
 	    	LocalDate.parse(dobField.getEditor().getText(), DateTimeFormatter.ofPattern("M/d/yyyy"));
 	    	dob = dobField.getValue();	
@@ -248,16 +273,16 @@ public class LoginView {
 	        return false;
 	    }
 
-	    // Check for valid date of birth
+	    
 	    if (dob == null || dob.isAfter(LocalDate.now())) {
 	        alert.setText("Please enter a valid date of birth.");
 	        alert.setFill(Color.RED);
 	        return false;
 	    }
 	   
-	    // Normalize the first and last name's capitalization
 	    firstName = firstName.substring(0,1).toUpperCase() + firstName.substring(1).toLowerCase();
 	    lastName = lastName.substring(0,1).toUpperCase() + lastName.substring(1).toLowerCase();
 	    return true;
 	}
+	
 }
