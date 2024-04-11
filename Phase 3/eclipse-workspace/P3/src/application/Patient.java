@@ -265,7 +265,7 @@ public class Patient {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm a_MM-dd-yyyy");
         String formattedDateTime = now.format(formatter);
         
-        String filename = "Latest Health Record " + formattedDateTime + ".txt";
+        String filename = "Record " + formattedDateTime + ".txt";
 
         fileWrite(filename, healthHistoryDir, record);
 	}
