@@ -1,5 +1,6 @@
 # Office Automation System for Pediatric Doctor's Office
 Team 40 - CSE 360 Tuesday 1:30 pm
+Note for eclipse: Import folder P3 as an eclipse project to run the application. 
 
 ## Team Members
 
